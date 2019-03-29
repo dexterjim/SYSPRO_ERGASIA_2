@@ -16,7 +16,7 @@ if ! [[ $NUM_OF_FILES =~ $re ]]; then
 	echo "Argument num_of_files is not a number !!!"
 	exit 2
 fi
-if (( $NUM_OF_FILES <= 0 )); then
+if (( $NUM_OF_FILES < 0 )); then #mporei autoi oi elegxoi na mhn xreiazontai !!!!!!!!!! ta allaksa apo <= 0 se < 0 , wste na mporei na pairnei kai mhdenikes times
 	echo "num_of_files must be positive !!!"
 	exit 3
 fi
@@ -30,7 +30,7 @@ if ! [[ $NUM_OF_DIRS =~ $re ]]; then
 	echo "Argument num_of_dirs is not a number !!!"
 	exit 4
 fi
-if (( $NUM_OF_DIRS <= 0 )); then
+if (( $NUM_OF_DIRS < 0 )); then
 	echo "num_of_dirs must be positive !!!"
 	exit 5
 fi
@@ -44,7 +44,7 @@ if ! [[ $LEVELS =~ $re ]]; then
 	echo "Argument levels is not a number !!!"
 	exit 4
 fi
-if (( $LEVELS <= 0 )); then
+if (( $LEVELS < 0 )); then
 	echo "levels must be positive !!!"
 	exit 5
 fi
@@ -126,9 +126,23 @@ while [ $COUNTER -lt $NUM_OF_FILES ]; do
 
 	PATH_FILE=${DIRECTORIES[OFFSET]}"/"${NEW_FILE}
 	echo $PATH_FILE
-	FILES+=("PATH_FILE")
+	FILES+=("$PATH_FILE")
 
 	let COUNTER=COUNTER+1
 done
 
 # 6.Gemizw ta arxeia
+COUNTER=0
+while [ $COUNTER -lt $NUM_OF_FILES ]; do
+	XARAKTHRES=$RANDOM
+	echo "XARAKTHRES BEFORE= "$XARAKTHRES
+	XARAKTHRES=$(($XARAKTHRES%130048)) #mou dinei ari8mous sto (0,127*1024(127kb))
+	let XARAKTHRES=XARAKTHRES+1024 #twra exw sto (1024,128*1024)=(1 kb , 128 kb)
+	echo "XARAKTHRES = "$XARAKTHRES
+	CONTEX=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $XARAKTHRES | head -n 1)
+	touch ${FILES[COUNTER]}
+	echo "FILE = "${FILES[COUNTER]}
+	echo ${CONTEX} >> ${FILES[COUNTER]}
+
+	let COUNTER=COUNTER+1
+done
