@@ -11,10 +11,8 @@
 #include "../header-files/functions.h"
 #include "../header-files/list.h"
 
-void sendFiles();
-
 int main(int argc,char **argv){
-	printf("HELLO WORLD SENDER\n");
+	printf("HELLO WORLD RECEIVER\n");
 
 	struct_arguments *arguments;
 	
@@ -67,12 +65,12 @@ int main(int argc,char **argv){
 	//////////////////
 
 	//ftiaxnw to pipename dld to path + to arxeio id*_to_id*.fifo
-	char *pipename=malloc((strlen(common_dir)+strlen(id)+strlen("_to_")+strlen(other_id)+strlen(".fifo")+1)*sizeof(char));
+	char *pipename=malloc((strlen(common_dir)+strlen(id)+strlen("_to_")+strlen(other_id)+strlen(".fifo")+1)*sizeof(char));//einai strlen opote den mas endiaferei h seira
 	memset(pipename,0,strlen(common_dir)+strlen(id)+strlen("_to_")+strlen(other_id)+strlen(".fifo")+1);
 	strcpy(pipename,common_dir);
-	strcat(pipename,id);
-	strcat(pipename,"_to_");
 	strcat(pipename,other_id);
+	strcat(pipename,"_to_");
+	strcat(pipename,id);
 	strcat(pipename,".fifo");
 
 	printf("pipename file=%s...\n",pipename);
@@ -92,51 +90,25 @@ int main(int argc,char **argv){
 
 	//open
 	int fd;
-	if((fd=open(pipename,O_WRONLY))<0){
+	if((fd=open(pipename,O_RDONLY))<0){
 		perror("fifo open problem1");
 				exit(3);
 	}
 
-
-	if(write(fd,argv[1],10)==-1){
+	
+	char *str=malloc(100*sizeof(char));
+	if(read(fd,str,10)<0){
 		perror("ERROR IN WRITING");
 				exit(10);
 	}
+	printf("\n\n\nMESSAGE IS %s...\n\n\n",str);
+	
 
-	/*8A TO BALW SE MIA ANADROMIKH FUNCTION
-	//https://stackoverflow.com/questions/4204666/how-to-list-files-in-a-directory-in-a-c-program
-	DIR *d;
-	struct dirent *dir;
-	d=opendir(input_dir);
-	if(d){
-		//arxika stelnw ton fakelo input_dir kai mesa sto while ta subdirs tou
-		
-		while((dir=readdir(d))!=NULL){
-			if(strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0){
-				
-			}
-		}
-	}
-	*/
-	//sendFiles(fd,input_dir);
-}
-/*
-void sendFiles(int fd,char *dir){//pairnw to fd apo to pipe kai ton fakelo pou 8elw na metaferw
-	unsigned short length;
-	length=strlen(dir);
-	printf("sendFiles %s %d\n",dir,length);
-	char temp_length[2];
-	sprintf(temp_length,"%d",length);
-
-	if(write(fd,temp_length,2)==-1){
-		perror("ERROR IN WRITING");
-				exit(10);
-	}
+	
 }
 
-//ama einai as exw ena sendDir kai ena sendFile
 
-*/
+
 
 
 
