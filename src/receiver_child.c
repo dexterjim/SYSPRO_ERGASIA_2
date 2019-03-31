@@ -45,6 +45,7 @@ int main(int argc,char **argv){
 
 	char *buffer_size=malloc((strlen(argv[5])+1)*sizeof(char));
 	strcpy(buffer_size,argv[5]);
+	int b=atoi(buffer_size);
 
 	char *log_file=malloc((strlen(argv[6])+1)*sizeof(char));
 	strcpy(log_file,argv[6]);
@@ -95,20 +96,124 @@ int main(int argc,char **argv){
 				exit(3);
 	}
 
-	
+	//ARXIKA PREPEI NA FTIAKSW STO MIRROR ENAN FAKELO ME TO OTHER_ID WSTE NA BALW EKEI MESA AYTA POU 8A MOU STEILEI
+	char *path_to_mirror;
+	path_to_mirror=malloc((strlen(mirror_dir)+strlen(other_id)+strlen("/")+1)*sizeof(char));
+	memset(path_to_mirror,0,strlen(mirror_dir)+strlen(other_id)+strlen("/")+1);
+	strcpy(path_to_mirror,mirror_dir);
+	strcat(path_to_mirror,other_id);
+	strcat(path_to_mirror,"/");
+
+	printf("path_to_mirror=%s...\n",path_to_mirror);
+
+	mkdir(path_to_mirror,0700);
+
+	/*px
 	char *str=malloc(100*sizeof(char));
 	if(read(fd,str,10)<0){
 		perror("ERROR IN WRITING");
 				exit(10);
 	}
 	printf("\n\n\nMESSAGE IS %s...\n\n\n",str);
-	
+	*/
+	int useless_part=-1;//poio kommati apo to path_name den xreiazomai , dld krataw mono ton teleutaio fakelo apo to prwto pathname pou 8a mou er8ei kai to kollaw meta to path_to_mirror , to -1 shmainei oti einai h prwth fora pou to trexw opote den exei parei timh akoma , (apo to useless_part kai meta to kratame)
+	for(;;){
+		char *length_name=malloc(2*sizeof(char));
+		if(read(fd,length_name,2)<0){// 1.
+			perror("ERROR IN WRITING");
+					exit(10);
+		}
+		printf("\n\n\nlength_name IS %s...\n\n\n",length_name);
 
-	
+		if(strcmp(length_name,"00")==0){
+			printf("TELOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOS\n");
+			break;
+		}
+
+		char *path_name=malloc((atoi(length_name)+1)*sizeof(char));
+		memset(path_name,0,atoi(length_name)+1);
+		if(read(fd,path_name,atoi(length_name))<0){// 2.
+			perror("ERROR IN WRITING");
+					exit(10);
+		}
+		printf("\n\n\npath_name IS %s...\n\n\n",path_name);
+
+		//ftiaxnw to onoma tou arxeio gia to mirror
+		if(useless_part==-1){
+			int i;
+			for(i=strlen(path_name);i>=0;i--){
+				if(path_name[i]=='/'){
+					break;
+				}
+			}
+			useless_part=i+1;
+			printf(" 1111111111111111111111111111111111111111111111 %s...\n",&(path_name[useless_part]));
+		}
+
+		if(isDirectory(path_name)>0){//is a dir
+			char *next_dir;
+			next_dir=malloc((strlen(path_to_mirror)+strlen(&(path_name[useless_part]))+strlen("/")+1)*sizeof(char));
+			memset(next_dir,0,strlen(path_to_mirror)+strlen(&(path_name[useless_part]))+strlen("/")+1);
+			strcpy(next_dir,path_to_mirror);
+			strcat(next_dir,&(path_name[useless_part]));
+			strcat(next_dir,"/");
+
+			mkdir(next_dir,0700);
+		}
+		else{//is a file
+			//https://www.tutorialspoint.com/c_standard_library/c_function_fopen.htm
+			//create file
+			char *next_file;
+			FILE *fp;
+			next_file=malloc((strlen(path_to_mirror)+strlen(&(path_name[useless_part]))+1)*sizeof(char));
+			memset(next_file,0,strlen(path_to_mirror)+strlen(&(path_name[useless_part]))+1);
+			strcpy(next_file,path_to_mirror);
+			strcat(next_file,&(path_name[useless_part]));
+
+			printf("next_file = %s...\n",next_file);
+
+			fp=fopen(next_file,"w");
+			//fclose(fp);
+
+			//read context of file
+			char *length_file=malloc(4*sizeof(char));
+			if(read(fd,length_file,4)<0){// 3.
+				perror("ERROR IN WRITING");
+						exit(10);
+			}
+			printf("\n\n\nlength_file IS %s...\n\n\n",length_file);
+/*
+			char *string;
+			string=malloc((atoi(length_file)+1)*sizeof(char));
+			memset(string,0,atoi(length_file)+1);
+			int bytes_transfered=0,tr;
+			while(bytes_transfered<atoi(length_file)){
+				if((tr=read(fd,&(string[bytes_transfered]),b))==-1){// 3.
+					perror("ERROR IN WRITING");
+							exit(10);
+				}
+				bytes_transfered+=tr;
+			}
+
+			fprintf(fp, "%s",string);*/
+
+			fclose(fp);
+		}
+
+		sleep(1);
+		//break;
+	}
 }
 
-
-
+/*
+int isDirectory(const char *path){
+	//https://stackoverflow.com/questions/4553012/checking-if-a-file-is-a-directory-or-just-a-file
+	struct stat statbuf;
+	if (stat(path, &statbuf) != 0)
+		return 0;
+	return S_ISDIR(statbuf.st_mode);
+}
+*/
 
 
 

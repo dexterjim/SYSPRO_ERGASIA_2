@@ -11,7 +11,7 @@
 #include "../header-files/functions.h"
 #include "../header-files/list.h"
 
-void sendFiles();
+void sendFiles(int fd,char *directory_or_file,int b);
 
 int main(int argc,char **argv){
 	printf("HELLO WORLD SENDER\n");
@@ -47,6 +47,7 @@ int main(int argc,char **argv){
 
 	char *buffer_size=malloc((strlen(argv[5])+1)*sizeof(char));
 	strcpy(buffer_size,argv[5]);
+	int b=atoi(buffer_size);
 
 	char *log_file=malloc((strlen(argv[6])+1)*sizeof(char));
 	strcpy(log_file,argv[6]);
@@ -89,19 +90,21 @@ int main(int argc,char **argv){
 			}
 		}
 	}
-
+	printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA id = %s...\n",id);
 	//open
 	int fd;
 	if((fd=open(pipename,O_WRONLY))<0){
+		printf("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ\n");
 		perror("fifo open problem1");
 				exit(3);
 	}
 
-
+	/*px
 	if(write(fd,argv[1],10)==-1){
 		perror("ERROR IN WRITING");
 				exit(10);
 	}
+	*/
 
 	/*8A TO BALW SE MIA ANADROMIKH FUNCTION
 	//https://stackoverflow.com/questions/4204666/how-to-list-files-in-a-directory-in-a-c-program
@@ -118,33 +121,129 @@ int main(int argc,char **argv){
 		}
 	}
 	*/
-	//sendFiles(fd,input_dir);
-}
-/*
-void sendFiles(int fd,char *dir){//pairnw to fd apo to pipe kai ton fakelo pou 8elw na metaferw
-	unsigned short length;
-	length=strlen(dir);
-	printf("sendFiles %s %d\n",dir,length);
-	char temp_length[2];
-	sprintf(temp_length,"%d",length);
+	printf("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS id = %s...\n",id);
+	sendFiles(fd,input_dir,b);
+	//////////////////
+	char temp_length_name[2];
+	temp_length_name[0]='0';
+	temp_length_name[1]='0';
 
-	if(write(fd,temp_length,2)==-1){
+	if(write(fd,temp_length_name,2)==-1){//1.
 		perror("ERROR IN WRITING");
 				exit(10);
 	}
+	//////////////////
+}
+
+//TO INPUTDIR NA EINAI XWRIS '/' STO TELOS
+
+void sendFiles(int fd,char *directory_or_file,int b){//pairnw to fd apo to pipe kai ton fakelo pou 8elw na metaferw
+	unsigned short length_name;
+	length_name=strlen(directory_or_file);
+	printf("sendFiles %s %d\n",directory_or_file,length_name);
+	char temp_length_name[2];
+	sprintf(temp_length_name,"%d",length_name);
+
+	if(write(fd,temp_length_name,2)==-1){//1.
+		perror("ERROR IN WRITING");
+				exit(10);
+	}
+
+	if(write(fd,directory_or_file,length_name)==-1){//2.
+		perror("ERROR IN WRITING");
+				exit(10);
+	}
+
+	//elegxw an einai arxeio h dir
+	if(isDirectory(directory_or_file)>0){//an einai dir , tom anoigw kai kalw thn synarthsh gia oti exei mesa
+		printf("sendFiles->dir\n");
+////////////////////////////////////////////
+		//https://stackoverflow.com/questions/4204666/how-to-list-files-in-a-directory-in-a-c-program
+		DIR *d;
+		struct dirent *dir;
+		d=opendir(directory_or_file);
+		if(d){
+			while((dir=readdir(d))!=NULL){
+				if(strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0){
+					printf("[[[dir->d_name=%s]]]\n",dir->d_name);
+					char *next_dir;
+					next_dir=malloc((strlen(directory_or_file)+strlen("/")+strlen(dir->d_name)+1)*sizeof(char));
+					memset(next_dir,0,strlen(directory_or_file)+strlen("/")+strlen(dir->d_name)+1);
+					strcpy(next_dir,directory_or_file);
+					strcat(next_dir,"/");
+					strcat(next_dir,dir->d_name);
+					sendFiles(fd,next_dir,b);
+				}
+			}
+		}
+////////////////////////////////////////////
+	}
+	else{//alliws ektelw ta bhmata 3,4
+		printf("sendFiles->file\n");
+
+		//https://stackoverflow.com/questions/14002954/c-programming-how-to-read-the-whole-file-contents-into-a-buffer
+		FILE *f=fopen(directory_or_file,"rb");
+		fseek(f,0,SEEK_END);
+		//long fsize=ftell(f);
+		int fsize=ftell(f);
+		fseek(f,0,SEEK_SET);
+
+		char *string=malloc((fsize+1)*sizeof(char));
+		fread(string,fsize,1,f);
+		fclose(f);
+
+		string[fsize]=0;
+
+		/////////////////////////////////////////////////////
+		char temp_length_file[4];
+		memset(temp_length_file,0,4);
+		sprintf(temp_length_file,"%d",fsize);
+
+		printf("fsize=%d temp_length_file=%s...\n",fsize,temp_length_file);
+
+		if(write(fd,temp_length_file,4)==-1){//3.
+			perror("ERROR IN WRITING");
+					exit(10);
+		}
+
+
+		//4.
+/*		int bytes_transfered=0,tr;
+		while(bytes_transfered<fsize){
+			if((tr=write(fd,&(string[bytes_transfered]),b))==-1){//3.
+				perror("ERROR IN WRITING");
+						exit(10);
+			}
+			bytes_transfered+=tr;
+		}
+*/
+	}
+
+	/*
+	//https://stackoverflow.com/questions/14002954/c-programming-how-to-read-the-whole-file-contents-into-a-buffer
+	FILE *f=fopen(directory_or_file,"rb");
+	fseek(f,0,SEEK_END);
+	long fsize=ftell(f);
+	fseek(f,0,SEEK_SET);
+
+	char *string=malloc((fsize+1)*sizeof(char));
+	fread(string,fsize,1,f);
+	fclose(f);
+
+	string[fsize]=0;
+	*/
 }
 
 //ama einai as exw ena sendDir kai ena sendFile
 
+/*
+int isDirectory(const char *path){
+	//https://stackoverflow.com/questions/4553012/checking-if-a-file-is-a-directory-or-just-a-file
+	struct stat statbuf;
+	if (stat(path, &statbuf) != 0)
+		return 0;
+	return S_ISDIR(statbuf.st_mode);
+}
 */
-
-
-
-
-
-
-
-
-
 
 

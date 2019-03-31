@@ -127,4 +127,10 @@ int countDigits(int x){
 }
 
 
-
+int isDirectory(const char *path){
+	//https://stackoverflow.com/questions/4553012/checking-if-a-file-is-a-directory-or-just-a-file
+	struct stat statbuf;
+	if (stat(path, &statbuf) != 0)
+		return 0;
+	return S_ISDIR(statbuf.st_mode);
+}
