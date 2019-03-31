@@ -31,7 +31,7 @@ int main(int argc,char **argv){
 	//////////////////
 
 	//////////////////
-	char *id=malloc((strlen(argv[1])+1)*sizeof(char));
+	char *id=malloc((strlen(argv[1])+1)*sizeof(char));//SE KA8E MALLOC KAI ENA MEMCPY !!!!
 	strcpy(id,argv[1]);
 
 	char *common_dir=malloc((strlen(argv[2])+1)*sizeof(char));
@@ -111,16 +111,17 @@ int main(int argc,char **argv){
 	/*px
 	char *str=malloc(100*sizeof(char));
 	if(read(fd,str,10)<0){
-		perror("ERROR IN WRITING");
+		perror("ERROR IN READING 1");
 				exit(10);
 	}
 	printf("\n\n\nMESSAGE IS %s...\n\n\n",str);
 	*/
 	int useless_part=-1;//poio kommati apo to path_name den xreiazomai , dld krataw mono ton teleutaio fakelo apo to prwto pathname pou 8a mou er8ei kai to kollaw meta to path_to_mirror , to -1 shmainei oti einai h prwth fora pou to trexw opote den exei parei timh akoma , (apo to useless_part kai meta to kratame)
 	for(;;){
-		char *length_name=malloc(2*sizeof(char));
+		char *length_name=malloc(3*sizeof(char));
+		memset(length_name,0,3);
 		if(read(fd,length_name,2)<0){// 1.
-			perror("ERROR IN WRITING");
+			perror("ERROR IN READING 2");
 					exit(10);
 		}
 		printf("\n\n\nlength_name IS %s...\n\n\n",length_name);
@@ -133,7 +134,7 @@ int main(int argc,char **argv){
 		char *path_name=malloc((atoi(length_name)+1)*sizeof(char));
 		memset(path_name,0,atoi(length_name)+1);
 		if(read(fd,path_name,atoi(length_name))<0){// 2.
-			perror("ERROR IN WRITING");
+			perror("ERROR IN READING 3");
 					exit(10);
 		}
 		printf("\n\n\npath_name IS %s...\n\n\n",path_name);
@@ -176,26 +177,43 @@ int main(int argc,char **argv){
 			//fclose(fp);
 
 			//read context of file
-			char *length_file=malloc(4*sizeof(char));
+			char *length_file=malloc(5*sizeof(char));
+			memset(length_file,0,5);
 			if(read(fd,length_file,4)<0){// 3.
-				perror("ERROR IN WRITING");
+				perror("ERROR IN READING 4");
 						exit(10);
 			}
 			printf("\n\n\nlength_file IS %s...\n\n\n",length_file);
-/*
+
 			char *string;
 			string=malloc((atoi(length_file)+1)*sizeof(char));
 			memset(string,0,atoi(length_file)+1);
+
+			char *temp_string;
+			temp_string=malloc((b+1)*sizeof(char));
+
 			int bytes_transfered=0,tr;
 			while(bytes_transfered<atoi(length_file)){
-				if((tr=read(fd,&(string[bytes_transfered]),b))==-1){// 3.
-					perror("ERROR IN WRITING");
-							exit(10);
+				memset(temp_string,0,b+1);
+				if(b<atoi(length_file)-bytes_transfered){//exei panw apo b akoma
+					if((tr=read(fd,&(string[bytes_transfered]),b))==-1){// 4.
+						perror("ERROR IN READING 5");
+								exit(10);
+					}
+					bytes_transfered+=tr;
 				}
-				bytes_transfered+=tr;
+				else{
+					if((tr=read(fd,&(string[bytes_transfered]),atoi(length_file)-bytes_transfered))==-1){// 3.
+						perror("ERROR IN READING 6");
+								exit(10);
+					}
+					bytes_transfered+=tr;
+				}
+				printf("\t\t\ttr=%d",tr);
 			}
+			printf("\t\t\treceiver done with file\n");
 
-			fprintf(fp, "%s",string);*/
+			fprintf(fp, "%s",string);
 
 			fclose(fp);
 		}

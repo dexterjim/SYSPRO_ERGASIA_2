@@ -101,7 +101,7 @@ int main(int argc,char **argv){
 
 	/*px
 	if(write(fd,argv[1],10)==-1){
-		perror("ERROR IN WRITING");
+		perror("ERROR IN WRITING 1");
 				exit(10);
 	}
 	*/
@@ -129,7 +129,7 @@ int main(int argc,char **argv){
 	temp_length_name[1]='0';
 
 	if(write(fd,temp_length_name,2)==-1){//1.
-		perror("ERROR IN WRITING");
+		perror("ERROR IN WRITING 2");
 				exit(10);
 	}
 	//////////////////
@@ -145,12 +145,12 @@ void sendFiles(int fd,char *directory_or_file,int b){//pairnw to fd apo to pipe 
 	sprintf(temp_length_name,"%d",length_name);
 
 	if(write(fd,temp_length_name,2)==-1){//1.
-		perror("ERROR IN WRITING");
+		perror("ERROR IN WRITING 3");
 				exit(10);
 	}
 
 	if(write(fd,directory_or_file,length_name)==-1){//2.
-		perror("ERROR IN WRITING");
+		perror("ERROR IN WRITING 4");
 				exit(10);
 	}
 
@@ -202,21 +202,31 @@ void sendFiles(int fd,char *directory_or_file,int b){//pairnw to fd apo to pipe 
 		printf("fsize=%d temp_length_file=%s...\n",fsize,temp_length_file);
 
 		if(write(fd,temp_length_file,4)==-1){//3.
-			perror("ERROR IN WRITING");
+			perror("ERROR IN WRITING 5");
 					exit(10);
 		}
 
 
 		//4.
-/*		int bytes_transfered=0,tr;
+		int bytes_transfered=0,tr;
 		while(bytes_transfered<fsize){
-			if((tr=write(fd,&(string[bytes_transfered]),b))==-1){//3.
-				perror("ERROR IN WRITING");
-						exit(10);
+			if(b<fsize-bytes_transfered){//exei panw apo b akoma
+				if((tr=write(fd,&(string[bytes_transfered]),b))==-1){//4.
+					perror("ERROR IN WRITING 6");
+							exit(10);
+				}
+				bytes_transfered+=tr;
 			}
-			bytes_transfered+=tr;
+			else{
+				if((tr=write(fd,&(string[bytes_transfered]),fsize-bytes_transfered))==-1){//4.
+					perror("ERROR IN WRITING 7");
+							exit(10);
+				}
+				bytes_transfered+=tr;
+			}
+			printf("\t\t\ttr=%d",tr);
 		}
-*/
+		printf("\t\t\tsender done with file\n");
 	}
 
 	/*
