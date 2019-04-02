@@ -12,6 +12,7 @@ struct struct_arguments{
 int takeArguments(struct_arguments **arguments,int argc,char **argv);
 int checkAndCreateDirs(struct_arguments *arguments);
 int createFileInCommon(struct_arguments *arguments);
+int createLogFile(struct_arguments *arguments);
 int countDigits(int x);
 
 

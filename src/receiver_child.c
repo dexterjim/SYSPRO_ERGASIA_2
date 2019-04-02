@@ -96,6 +96,11 @@ int main(int argc,char **argv){
 				exit(3);
 	}
 
+///////////////////////////////////////
+	FILE *f_log;
+	f_log=fopen(log_file,"a");
+/////////////////////////////////////////
+
 	//ARXIKA PREPEI NA FTIAKSW STO MIRROR ENAN FAKELO ME TO OTHER_ID WSTE NA BALW EKEI MESA AYTA POU 8A MOU STEILEI
 	char *path_to_mirror;
 	path_to_mirror=malloc((strlen(mirror_dir)+strlen(other_id)+strlen("/")+1)*sizeof(char));
@@ -160,6 +165,9 @@ int main(int argc,char **argv){
 			strcat(next_dir,"/");
 
 			mkdir(next_dir,0700);
+///////////////////////////////////////
+			fprintf(f_log,"receive %d\n",2+atoi(length_name));
+////////////////////////////////////////
 		}
 		else{//is a file
 			//https://www.tutorialspoint.com/c_standard_library/c_function_fopen.htm
@@ -189,12 +197,12 @@ int main(int argc,char **argv){
 			string=malloc((atoi(length_file)+1)*sizeof(char));
 			memset(string,0,atoi(length_file)+1);
 
-			char *temp_string;
-			temp_string=malloc((b+1)*sizeof(char));
+			//char *temp_string;
+			//temp_string=malloc((b+1)*sizeof(char));
 
 			int bytes_transfered=0,tr;
 			while(bytes_transfered<atoi(length_file)){
-				memset(temp_string,0,b+1);
+				//memset(temp_string,0,b+1);
 				if(b<atoi(length_file)-bytes_transfered){//exei panw apo b akoma
 					if((tr=read(fd,&(string[bytes_transfered]),b))==-1){// 4.
 						perror("ERROR IN READING 5");
@@ -216,9 +224,12 @@ int main(int argc,char **argv){
 			fprintf(fp, "%s",string);
 
 			fclose(fp);
+///////////////////////////////////////
+			fprintf(f_log,"receive %s %d\n",next_file,2+atoi(length_name)+4+atoi(length_file));
+////////////////////////////////////////
 		}
 
-		sleep(1);
+		//sleep(1); //sto git me to COMPLETED to exw anoikto
 		//break;
 	}
 }

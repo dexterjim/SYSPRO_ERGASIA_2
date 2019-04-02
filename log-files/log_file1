@@ -1,0 +1,55 @@
+id 1
+send 23
+send 25
+send 28
+send ./input-files/myfiles/b/fb 75
+send 29
+send ./input-files/myfiles/b/bb2/fbb 72
+send 25
+send 28
+send 32
+send ./input-files/myfiles/a/aa/aaa/faaa 104
+send ./input-files/myfiles/a/aa/faa2 69
+send ./input-files/myfiles/a/aa/faa 72
+send ./input-files/myfiles/ff 49
+receive 25
+receive 28
+receive 32
+receive ./mirror-files/m1/3/a/aa/aaa/faaa 104
+receive ./mirror-files/m1/3/a/aa/faa2 69
+receive ./mirror-files/m1/3/a/aa/faa 72
+client left id=1
+client left id=1
+client left id=1
+client left id=1
+send 23
+send 25
+send 28
+send ./input-files/myfiles/b/fb 75
+send 29
+send ./input-files/myfiles/b/bb2/fbb 72
+send 25
+send 28
+send 32
+send ./input-files/myfiles/a/aa/aaa/faaa 104
+send ./input-files/myfiles/a/aa/faa2 69
+send ./input-files/myfiles/a/aa/faa 72
+send ./input-files/myfiles/ff 49
+receive 25
+receive 28
+receive ./mirror-files/m1/2/b/fb 75
+receive 29
+receive ./mirror-files/m1/2/b/bb2/fbb 72
+client left id=1
+client left id=1
+client left id=1
+client left id=1
+client left id=1
+client left id=1
+client left id=1
+client left id=1
+client left id=1
+client left id=1
+client left id=1
+client left id=1
+client left id=1

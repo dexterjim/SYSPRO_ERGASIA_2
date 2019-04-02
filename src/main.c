@@ -36,6 +36,10 @@ int main(int argc,char **argv){
 		return 3;
 	}
 
+	if(createLogFile(arguments)==-1){
+		return 4;
+	}
+
 	//leipei to bhma 3
 
 	//lista me ta arxeia pou epikoinwnei
@@ -157,7 +161,13 @@ int main(int argc,char **argv){
 			closedir(d);
 		}
 
-		sleep(10);
+		sleep(1);//to eixa 10
+///////////////////////////////////////
+	FILE *f_log;
+	f_log=fopen(arguments->log_file,"a");
+	fprintf(f_log,"client left id=%d\n",arguments->id);
+	fclose(f_log);
+/////////////////////////////////////////
 	}
 
 	destroyList(&l);

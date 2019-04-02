@@ -11,7 +11,7 @@
 #include "../header-files/functions.h"
 #include "../header-files/list.h"
 
-void sendFiles(int fd,char *directory_or_file,int b);
+void sendFiles(int fd,char *directory_or_file,int b,char *log_file);
 
 int main(int argc,char **argv){
 	printf("HELLO WORLD SENDER\n");
@@ -122,7 +122,7 @@ int main(int argc,char **argv){
 	}
 	*/
 	printf("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS id = %s...\n",id);
-	sendFiles(fd,input_dir,b);
+	sendFiles(fd,input_dir,b,log_file);
 	//////////////////
 	char temp_length_name[2];
 	temp_length_name[0]='0';
@@ -137,7 +137,7 @@ int main(int argc,char **argv){
 
 //TO INPUTDIR NA EINAI XWRIS '/' STO TELOS
 
-void sendFiles(int fd,char *directory_or_file,int b){//pairnw to fd apo to pipe kai ton fakelo pou 8elw na metaferw
+void sendFiles(int fd,char *directory_or_file,int b,char *log_file){//pairnw to fd apo to pipe kai ton fakelo pou 8elw na metaferw
 	unsigned short length_name;
 	length_name=strlen(directory_or_file);
 	printf("sendFiles %s %d\n",directory_or_file,length_name);
@@ -154,9 +154,18 @@ void sendFiles(int fd,char *directory_or_file,int b){//pairnw to fd apo to pipe 
 				exit(10);
 	}
 
+///////////////////////////////////////
+	FILE *f_log;
+	f_log=fopen(log_file,"a");
+/////////////////////////////////////////
+
 	//elegxw an einai arxeio h dir
 	if(isDirectory(directory_or_file)>0){//an einai dir , tom anoigw kai kalw thn synarthsh gia oti exei mesa
 		printf("sendFiles->dir\n");
+///////////////////////////////////////
+		fprintf(f_log,"send %d\n",2+length_name);
+		fclose(f_log);
+////////////////////////////////////////
 ////////////////////////////////////////////
 		//https://stackoverflow.com/questions/4204666/how-to-list-files-in-a-directory-in-a-c-program
 		DIR *d;
@@ -172,11 +181,15 @@ void sendFiles(int fd,char *directory_or_file,int b){//pairnw to fd apo to pipe 
 					strcpy(next_dir,directory_or_file);
 					strcat(next_dir,"/");
 					strcat(next_dir,dir->d_name);
-					sendFiles(fd,next_dir,b);
+					sendFiles(fd,next_dir,b,log_file);
 				}
 			}
 		}
 ////////////////////////////////////////////
+
+///////////////////////////////////////
+		//fprintf(f_log,"send %d\n",2+length_name);
+////////////////////////////////////////
 	}
 	else{//alliws ektelw ta bhmata 3,4
 		printf("sendFiles->file\n");
@@ -227,6 +240,10 @@ void sendFiles(int fd,char *directory_or_file,int b){//pairnw to fd apo to pipe 
 			printf("\t\t\ttr=%d",tr);
 		}
 		printf("\t\t\tsender done with file\n");
+///////////////////////////////////////
+		fprintf(f_log,"send %s %d\n",directory_or_file,2+length_name+4+atoi(temp_length_file));
+		fclose(f_log);
+////////////////////////////////////////
 	}
 
 	/*

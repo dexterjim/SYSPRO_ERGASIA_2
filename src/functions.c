@@ -117,6 +117,19 @@ int createFileInCommon(struct_arguments *arguments){//ta dirs prepei na dinontai
 	return 0;
 }
 
+int createLogFile(struct_arguments *arguments){
+	//anoigw to arxeio
+	FILE *f;
+	f=fopen(arguments->log_file,"w");
+
+	//grafw to id mesa se auto
+	fprintf(f,"id %d\n",arguments->id);
+
+	//kleinw to arxeio
+	fclose(f);//GENIKA NA ELEGXW AN KLEINW SWSTA OLA TA ARXEIA
+	return 0;
+}
+
 int countDigits(int x){
 	int c=0;
 	while(x>0){
