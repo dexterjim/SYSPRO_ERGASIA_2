@@ -1,41 +1,39 @@
 id 2
-send 25
-send 28
-send ./input-files/myfiles/b/fb 75
-send 29
-send ./input-files/myfiles/b/bb2/fbb 72
-receive 25
-receive 28
-receive 32
-receive ./mirror-files/m2/3/a/aa/aaa/faaa 104
-receive ./mirror-files/m2/3/a/aa/faa2 69
-receive ./mirror-files/m2/3/a/aa/faa 72
-send 25
-send 28
-send ./input-files/myfiles/b/fb 75
-send 29
-send ./input-files/myfiles/b/bb2/fbb 72
-receive 23
-receive 25
-receive 28
-receive ./mirror-files/m2/1/myfiles/b/fb 75
-receive 29
-receive ./mirror-files/m2/1/myfiles/b/bb2/fbb 72
-receive 25
-receive 28
-receive 32
-receive ./mirror-files/m2/1/myfiles/a/aa/aaa/faaa 104
-receive ./mirror-files/m2/1/myfiles/a/aa/faa2 69
-receive ./mirror-files/m2/1/myfiles/a/aa/faa 72
-receive ./mirror-files/m2/1/myfiles/ff 49
+receive 4
+receive 7
+receive 11
+receive ./mirror-files/m2/3/a/aa/aaa/faaa 82
+receive ./mirror-files/m2/3/a/aa/faa2 47
+receive ./mirror-files/m2/3/a/aa/faa 50
+send 4
+send 7
+send ./input-files/myfiles/b/fb 53
+send 8
+send ./input-files/myfiles/b/bb2/fbb 50
 client left id=2
 client left id=2
 client left id=2
 client left id=2
 client left id=2
 client left id=2
-client left id=2
-client left id=2
+send 4
+send 7
+send ./input-files/myfiles/b/fb 53
+send 8
+send ./input-files/myfiles/b/bb2/fbb 50
+receive 10
+receive 12
+receive 15
+receive ./mirror-files/m2/1/myfiles/b/fb 61
+receive 16
+receive ./mirror-files/m2/1/myfiles/b/bb2/fbb 58
+receive 12
+receive 15
+receive 19
+receive ./mirror-files/m2/1/myfiles/a/aa/aaa/faaa 90
+receive ./mirror-files/m2/1/myfiles/a/aa/faa2 55
+receive ./mirror-files/m2/1/myfiles/a/aa/faa 58
+receive ./mirror-files/m2/1/myfiles/ff 35
 client left id=2
 client left id=2
 client left id=2

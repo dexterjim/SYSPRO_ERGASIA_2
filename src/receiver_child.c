@@ -121,7 +121,7 @@ int main(int argc,char **argv){
 	}
 	printf("\n\n\nMESSAGE IS %s...\n\n\n",str);
 	*/
-	int useless_part=-1;//poio kommati apo to path_name den xreiazomai , dld krataw mono ton teleutaio fakelo apo to prwto pathname pou 8a mou er8ei kai to kollaw meta to path_to_mirror , to -1 shmainei oti einai h prwth fora pou to trexw opote den exei parei timh akoma , (apo to useless_part kai meta to kratame)
+	//int useless_part=-1;//poio kommati apo to path_name den xreiazomai , dld krataw mono ton teleutaio fakelo apo to prwto pathname pou 8a mou er8ei kai to kollaw meta to path_to_mirror , to -1 shmainei oti einai h prwth fora pou to trexw opote den exei parei timh akoma , (apo to useless_part kai meta to kratame)
 	for(;;){
 		char *length_name=malloc(3*sizeof(char));
 		memset(length_name,0,3);
@@ -145,7 +145,7 @@ int main(int argc,char **argv){
 		printf("\n\n\npath_name IS %s...\n\n\n",path_name);
 
 		//ftiaxnw to onoma tou arxeio gia to mirror
-		if(useless_part==-1){
+		/*if(useless_part==-1){
 			int i;
 			for(i=strlen(path_name);i>=0;i--){
 				if(path_name[i]=='/'){
@@ -154,15 +154,14 @@ int main(int argc,char **argv){
 			}
 			useless_part=i+1;
 			printf(" 1111111111111111111111111111111111111111111111 %s...\n",&(path_name[useless_part]));
-		}
+		}*/
 
-		if(isDirectory(path_name)>0){//is a dir
+		if(path_name[strlen(path_name)-1]=='/'){//is a dir
 			char *next_dir;
-			next_dir=malloc((strlen(path_to_mirror)+strlen(&(path_name[useless_part]))+strlen("/")+1)*sizeof(char));
-			memset(next_dir,0,strlen(path_to_mirror)+strlen(&(path_name[useless_part]))+strlen("/")+1);
+			next_dir=malloc((strlen(path_to_mirror)+strlen(path_name)+1)*sizeof(char));
+			memset(next_dir,0,strlen(path_to_mirror)+strlen(path_name)+1);
 			strcpy(next_dir,path_to_mirror);
-			strcat(next_dir,&(path_name[useless_part]));
-			strcat(next_dir,"/");
+			strcat(next_dir,path_name);
 
 			mkdir(next_dir,0700);
 ///////////////////////////////////////
@@ -174,10 +173,10 @@ int main(int argc,char **argv){
 			//create file
 			char *next_file;
 			FILE *fp;
-			next_file=malloc((strlen(path_to_mirror)+strlen(&(path_name[useless_part]))+1)*sizeof(char));
-			memset(next_file,0,strlen(path_to_mirror)+strlen(&(path_name[useless_part]))+1);
+			next_file=malloc((strlen(path_to_mirror)+strlen(path_name)+1)*sizeof(char));
+			memset(next_file,0,strlen(path_to_mirror)+strlen(path_name)+1);
 			strcpy(next_file,path_to_mirror);
-			strcat(next_file,&(path_name[useless_part]));
+			strcat(next_file,path_name);
 
 			printf("next_file = %s...\n",next_file);
 

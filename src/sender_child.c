@@ -11,7 +11,7 @@
 #include "../header-files/functions.h"
 #include "../header-files/list.h"
 
-void sendFiles(int fd,char *directory_or_file,int b,char *log_file);
+void sendFiles(int fd,char *directory_or_file,int b,char *log_file,int useless_part);
 
 int main(int argc,char **argv){
 	printf("HELLO WORLD SENDER\n");
@@ -122,7 +122,19 @@ int main(int argc,char **argv){
 	}
 	*/
 	printf("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS id = %s...\n",id);
-	sendFiles(fd,input_dir,b,log_file);
+///////////////////////
+	int useless_part;
+	int i;
+	for(i=strlen(input_dir)-2;i>=0;i--){//-2 gt den 8elw to teleutaio '/'
+		if(input_dir[i]=='/'){
+			break;
+		}
+	}
+	useless_part=i+1;
+	printf(" 1111111111111111111111111111111111111111111111 %s...\n",&(input_dir[useless_part]));
+
+////////////////////////
+	sendFiles(fd,input_dir,b,log_file,useless_part);
 	//////////////////
 	char temp_length_name[2];
 	temp_length_name[0]='0';
@@ -135,12 +147,12 @@ int main(int argc,char **argv){
 	//////////////////
 }
 
-//TO INPUTDIR NA EINAI XWRIS '/' STO TELOS
+//TO INPUTDIR NA EINAI ME '/' STO TELOS
 
-void sendFiles(int fd,char *directory_or_file,int b,char *log_file){//pairnw to fd apo to pipe kai ton fakelo pou 8elw na metaferw
+void sendFiles(int fd,char *directory_or_file,int b,char *log_file,int useless_part){//pairnw to fd apo to pipe kai ton fakelo pou 8elw na metaferw
 	unsigned short length_name;
-	length_name=strlen(directory_or_file);
-	printf("sendFiles %s %d\n",directory_or_file,length_name);
+	length_name=strlen(&(directory_or_file[useless_part]));
+	printf("sendFiles %s %d\n",&(directory_or_file[useless_part]),length_name);
 	char temp_length_name[2];
 	sprintf(temp_length_name,"%d",length_name);
 
@@ -149,7 +161,7 @@ void sendFiles(int fd,char *directory_or_file,int b,char *log_file){//pairnw to 
 				exit(10);
 	}
 
-	if(write(fd,directory_or_file,length_name)==-1){//2.
+	if(write(fd,&(directory_or_file[useless_part]),length_name)==-1){//2.
 		perror("ERROR IN WRITING 4");
 				exit(10);
 	}
@@ -176,12 +188,15 @@ void sendFiles(int fd,char *directory_or_file,int b,char *log_file){//pairnw to 
 				if(strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0){
 					printf("[[[dir->d_name=%s]]]\n",dir->d_name);
 					char *next_dir;
-					next_dir=malloc((strlen(directory_or_file)+strlen("/")+strlen(dir->d_name)+1)*sizeof(char));
-					memset(next_dir,0,strlen(directory_or_file)+strlen("/")+strlen(dir->d_name)+1);
+					next_dir=malloc((strlen(directory_or_file)+strlen(dir->d_name)+strlen("/")+1)*sizeof(char));
+					memset(next_dir,0,strlen(directory_or_file)+strlen(dir->d_name)+strlen("/")+1);
 					strcpy(next_dir,directory_or_file);
-					strcat(next_dir,"/");
+					//strcat(next_dir,"/");
 					strcat(next_dir,dir->d_name);
-					sendFiles(fd,next_dir,b,log_file);
+					if(isDirectory(next_dir)>0){
+						strcat(next_dir,"/");
+					}
+					sendFiles(fd,next_dir,b,log_file,useless_part);
 				}
 			}
 		}
