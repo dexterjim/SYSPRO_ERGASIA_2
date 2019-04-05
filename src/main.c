@@ -47,13 +47,13 @@ int main(int argc,char **argv){
 	initializeList(&l);
 
 	//bazw to arxeio tou apo to common dir wste na to agnow , MPOREI NA MHN XREIAZETAI WSTE NA KANW SUNDESH ME TON EAUTO MOU WSTE NA GINEI H METAFORA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	char *temp;
+	/*char *temp;
 	temp=malloc((countDigits(arguments->id)+strlen(".id")+1)*sizeof(char));
 	memset(temp,0,countDigits(arguments->id)+strlen(".id")+1);
 	sprintf(temp,"%d",arguments->id);
 	strcat(temp,".id");
 
-	insertList(l,temp);
+	insertList(l,temp);*///AYTO EINAI GIA AN 8ELW NA METAFERW H OXI TA DIKA MOU ARXEIA KAI ANOIKTO KAI KLEISTO DOULEYEI MIA XARA
 	printList(l);
 
 	printf("\n\n\n\n\n");
@@ -75,6 +75,10 @@ int main(int argc,char **argv){
 	//char *receiver_args[]={"./receiver_child",temp_id,arguments->common_dir,arguments->input_dir,arguments->mirror_dir,temp_buffer_size,arguments->log_file,NULL,NULL};
 
 	while(1){
+////////////////////////////
+//mhdenizw ola ta still_exist
+		initializeZeroList(l);///////
+////////////////////////////
 		//anoigw ton common dir kai blepw ta arxeia
 		//https://stackoverflow.com/questions/4204666/how-to-list-files-in-a-directory-in-a-c-program
 		DIR *d;
@@ -158,12 +162,51 @@ int main(int argc,char **argv){
 					}
 				}
 			}
+////////////////////////////////////////////////////////////////
+//ektelw to 5 gia ola ta still_exist==0
+			char *missing_client;
+			while((missing_client=searchAndDeleteZeroList(l))!=NULL){///////
+				printf("\n\n\nmissing_client=%s...\n\n\n",missing_client);
+
+				//gia to receiver-child
+				int pid=fork();
+				switch(pid){
+					case -1:
+						printf("\n\nFORK FAILED!!!\n\n\n");
+						return 4;
+					case 0://child
+						printf("child1\n");
+						//////////////////////////
+						int other_id=0;
+						int i=0;
+						while(missing_client[i]!='.'){
+							other_id=other_id*10+missing_client[i]-'0';
+							i++;
+						}
+						char *temp_other_id;
+						temp_other_id=malloc((countDigits(other_id)+1)*sizeof(char));
+						memset(temp_other_id,0,countDigits(other_id)+1);
+						sprintf(temp_other_id,"%d",other_id);
+						//////////////////////////
+						//execv(receiver_args[0],receiver_args);
+						execl("./cleaner_child","./cleaner_child",temp_id,arguments->common_dir,arguments->input_dir,arguments->mirror_dir,temp_buffer_size,arguments->log_file,temp_other_id,NULL);
+						printf("child2\n");
+						break;
+					default://parent
+						//array_of_processes[i]=pid;
+						printf("parent\n");
+						break;
+				}
+			}
+			printList(l);
+			printf("\n\nALL missing_clients DELETED\n\n");
+////////////////////////////////////////////////////////////////
 			closedir(d);
 		}
 
 		sleep(1);//to eixa 10
 ///////////////////////////////////////
-	FILE *f_log;
+	FILE *f_log;//AYTA PREPEI NA FYGEI TO EXW BALEI APLA GIA NA TESTARW TO SCRIPT
 	f_log=fopen(arguments->log_file,"a");
 	fprintf(f_log,"client left id=%d\n",arguments->id);
 	fclose(f_log);
