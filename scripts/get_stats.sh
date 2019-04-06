@@ -1,8 +1,6 @@
 #!/bin/bash
 
-echo "HELLO WORLD"
-
-IDS=()
+IDS=() #lista me ta ids
 NUMBER_OF_IDS=0
 MAX_ID=0
 MIN_ID=0
@@ -15,17 +13,12 @@ NUMBER_OF_CLIENTS_LEFT=0
 #https://linuxhint.com/read_file_line_by_line_bash/
 #diabazw grammh grammh to cat
 while read line; do
-	echo "-----------------"
-	echo $line;
-
 	WHICH_WORD=0
 	TYPE=0
 
-	for word in $line
+	for word in $line #ka8e grammh exei 2-3 lekseis
 	do
-		echo $word
-
-		if [ $WHICH_WORD -eq 0 ]; then
+		if [ $WHICH_WORD -eq 0 ]; then # h prwth leksh exei 4 epiloges pou fainontai parakatw
 			WHICH_WORD=1
 			if [ "$word" = "id" ]; then
 				TYPE=1
@@ -37,11 +30,10 @@ while read line; do
 				let NUMBER_OF_CLIENTS_LEFT=NUMBER_OF_CLIENTS_LEFT+1
 				break
 			fi
-			echo "TYPE ="$TYPE
-		elif [ $WHICH_WORD -eq 1 ]; then
+		elif [ $WHICH_WORD -eq 1 ]; then #analoga me thn prwth leksh pou exoume 
 			WHICH_WORD=2
-			if [ $TYPE -eq 1 ]; then
-				IDS+=("$word")
+			if [ $TYPE -eq 1 ]; then # an htan "id" tote exei akoma 1 leksh pou pou einai to id tou client
+				IDS+=("$word") # opote to bazw sthn lista me ta ids , kai ananewnw opou xreiazetai ta upoloipa pou aforoun ta id
 				let NUMBER_OF_IDS=NUMBER_OF_IDS+1
 				if [ $MAX_ID -eq 0 ]; then
 					let MAX_ID=word
@@ -54,25 +46,24 @@ while read line; do
 				elif [ $MIN_ID -gt $word ]; then
 					let MIN_ID=word
 				fi
-			elif [ $TYPE -eq 2 ]; then
+			elif [ $TYPE -eq 2 ]; then # gia send
 				#https://stackoverflow.com/questions/806906/how-do-i-test-if-a-variable-is-a-number-in-bash
 				re='^[0-9]+$'
-				if [[ $word =~ $re ]]; then #an einai ari8mos
-					echo "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+				if [[ $word =~ $re ]]; then #elegxw an einai ari8mos , an nai kseroume oti metafer8hke directory , opote apla auksanoume ta bytes pou steilame
 					let BYTES_SEND=BYTES_SEND+word
 				fi
-			elif [ $TYPE -eq 3 ]; then
+			elif [ $TYPE -eq 3 ]; then # gia receive
 				#https://stackoverflow.com/questions/806906/how-do-i-test-if-a-variable-is-a-number-in-bash
 				re='^[0-9]+$'
-				if [[ $word =~ $re ]]; then #an einai ari8mos
+				if [[ $word =~ $re ]]; then #omoiws gia receiver
 					let BYTES_RECEIVED=BYTES_RECEIVED+word
 				fi
 			fi
-		elif [ $WHICH_WORD -eq 2 ]; then
-			if [ $TYPE -eq 2 ]; then
+		elif [ $WHICH_WORD -eq 2 ]; then # 3 lekseis exoume mono an metafer8hke arxeio
+			if [ $TYPE -eq 2 ]; then # gia send , auksanoume ta bytes poy stal8hkan kai ton ari8mo twn arxeiwn pou stal8hkan
 				let BYTES_SEND=BYTES_SEND+word
 				let FILES_SEND=FILES_SEND+1
-			elif [ $TYPE -eq 3 ]; then
+			elif [ $TYPE -eq 3 ]; then # omoiws gia receive
 				let BYTES_RECEIVED=BYTES_RECEIVED+word
 				let FILES_RECEIVED=FILES_RECEIVED+1
 			fi
@@ -82,7 +73,7 @@ while read line; do
 done
 
 echo "Number of ids : "$NUMBER_OF_IDS
-echo -ne "ids :"
+echo -ne "List of ids :"
 COUNTER=0
 while [ $COUNTER -lt $NUMBER_OF_IDS ]; do
 	echo -ne " "${IDS[COUNTER]}

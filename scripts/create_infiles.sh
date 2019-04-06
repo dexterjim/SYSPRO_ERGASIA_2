@@ -16,7 +16,7 @@ if ! [[ $NUM_OF_FILES =~ $re ]]; then
 	echo "Argument num_of_files is not a number !!!"
 	exit 2
 fi
-if (( $NUM_OF_FILES < 0 )); then #mporei autoi oi elegxoi na mhn xreiazontai !!!!!!!!!! ta allaksa apo <= 0 se < 0 , wste na mporei na pairnei kai mhdenikes times
+if (( $NUM_OF_FILES < 0 )); then 
 	echo "num_of_files must be positive !!!"
 	exit 3
 fi
@@ -61,11 +61,6 @@ if [ ! -d $DIR_NAME ]; then
 fi
 ###
 
-echo $DIR_NAME
-echo $NUM_OF_FILES
-echo $NUM_OF_DIRS
-echo $LEVELS
-
 # 3. Dhmiourgw ta directory names
 DIRECTORY_NAMES=()
 COUNTER=0
@@ -73,13 +68,11 @@ while [ $COUNTER -lt $NUM_OF_DIRS ]; do
 	XARAKTHRES=$RANDOM
 	XARAKTHRES=$(($XARAKTHRES%8))
 	let XARAKTHRES=XARAKTHRES+1
-	echo "XARAKTHRES = "$XARAKTHRES
 
 	#https://gist.github.com/earthgecko/3089509
 	NEW_DIR_NAME=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $XARAKTHRES | head -n 1)
-	echo "NEW_DIR_NAME = "$NEW_DIR_NAME
+	#echo "NEW_DIR_NAME = "$NEW_DIR_NAME
 
-	#MPOREI NA 8ELEI ELEGXO AN YPARXEI IDI
 	DIRECTORY_NAMES+=("$NEW_DIR_NAME")
 
 	let COUNTER=COUNTER+1
@@ -94,11 +87,11 @@ while [ $COUNTER -lt $NUM_OF_DIRS ]; do
 	#an to counter einai pollaplasio tou LEVELS tote prepei na arxisw pali apo thn arxh na bazw dirs
 	if !(($COUNTER % $LEVELS)); then
 		NEW_DIR_NAME=$DIR_NAME"/"${DIRECTORY_NAMES[$COUNTER]}
-		echo $NEW_DIR_NAME
+		#echo $NEW_DIR_NAME
 	#alliws pairnw ton teleutaio dir pou eftiaksa kai tou bazw ena epipodo akoma
 	else
 		NEW_DIR_NAME=${DIRECTORIES[$COUNTER]}"/"${DIRECTORY_NAMES[$COUNTER]}
-		echo $NEW_DIR_NAME
+		#echo $NEW_DIR_NAME
 	fi
 
 	#dhmiourgw to dir_name kai to bazw sthn lista me ta directories
@@ -113,19 +106,17 @@ FILES=()
 COUNTER=0
 while [ $COUNTER -lt $NUM_OF_FILES ]; do
 	let "OFFSET=COUNTER % (NUM_OF_DIRS+1)"
-	echo $OFFSET
 
 	XARAKTHRES=$RANDOM
 	XARAKTHRES=$(($XARAKTHRES%8))
 	let XARAKTHRES=XARAKTHRES+1
-	echo "XARAKTHRES = "$XARAKTHRES
 
 	#https://gist.github.com/earthgecko/3089509
 	NEW_FILE=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $XARAKTHRES | head -n 1)
-	echo "NEW_FILE = "$NEW_FILE
+	#echo "NEW_FILE = "$NEW_FILE
 
 	PATH_FILE=${DIRECTORIES[OFFSET]}"/"${NEW_FILE}
-	echo $PATH_FILE
+	#echo $PATH_FILE
 	FILES+=("$PATH_FILE")
 
 	let COUNTER=COUNTER+1
@@ -134,14 +125,15 @@ done
 # 6.Gemizw ta arxeia
 COUNTER=0
 while [ $COUNTER -lt $NUM_OF_FILES ]; do
+	#https://stackoverflow.com/questions/2556190/random-number-from-a-range-in-a-bash-script
+	#to range ths urandom einai 0 and 32767
+
 	XARAKTHRES=$RANDOM
-	echo "XARAKTHRES BEFORE= "$XARAKTHRES
+	let XARAKTHRES=XARAKTHRES*32768+XARAKTHRES #ousistika ekana XARAKTHRES<<15+XARAKTHRES , me skopo na ftiaksw enan ari8mo 2^30 , egw xreiazomai ws 2^17 , pollaplasiazw me 2^15
 	XARAKTHRES=$(($XARAKTHRES%130048)) #mou dinei ari8mous sto (0,127*1024(127kb))
 	let XARAKTHRES=XARAKTHRES+1024 #twra exw sto (1024,128*1024)=(1 kb , 128 kb)
-	echo "XARAKTHRES = "$XARAKTHRES
 	CONTEX=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w $XARAKTHRES | head -n 1)
 	touch ${FILES[COUNTER]}
-	echo "FILE = "${FILES[COUNTER]}
 	echo ${CONTEX} >> ${FILES[COUNTER]}
 
 	let COUNTER=COUNTER+1
