@@ -136,11 +136,13 @@ int main(int argc,char **argv){
 ////////////////////////
 	sendFiles(fd,input_dir,b,log_file,useless_part);
 	//////////////////
-	char temp_length_name[2];
-	temp_length_name[0]='0';
-	temp_length_name[1]='0';
+	//char temp_length_name[2];
+	//temp_length_name[0]='0';
+	//temp_length_name[1]='0';
 
-	if(write(fd,temp_length_name,2)==-1){//1.
+	unsigned short int length_name=0;
+
+	if(write(fd,&length_name,2)==-1){//1.
 		perror("ERROR IN WRITING 2");
 				exit(10);
 	}
@@ -153,10 +155,10 @@ void sendFiles(int fd,char *directory_or_file,int b,char *log_file,int useless_p
 	unsigned short length_name;
 	length_name=strlen(&(directory_or_file[useless_part]));
 	printf("sendFiles %s %d\n",&(directory_or_file[useless_part]),length_name);
-	char temp_length_name[2];
-	sprintf(temp_length_name,"%d",length_name);
+	//char temp_length_name[2];
+	//sprintf(temp_length_name,"%d",length_name);
 
-	if(write(fd,temp_length_name,2)==-1){//1.
+	if(write(fd,&length_name,2)==-1){//1.
 		perror("ERROR IN WRITING 3");
 				exit(10);
 	}
@@ -213,23 +215,28 @@ void sendFiles(int fd,char *directory_or_file,int b,char *log_file,int useless_p
 		FILE *f=fopen(directory_or_file,"rb");
 		fseek(f,0,SEEK_END);
 		//long fsize=ftell(f);
-		int fsize=ftell(f);
+		unsigned int fsize=ftell(f);
 		fseek(f,0,SEEK_SET);
 
 		char *string=malloc((fsize+1)*sizeof(char));
+		/*if(string==NULL){
+			printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+			sleep(10);
+		}*/
+//na tupwnw to string mhpws kai den to xwraei H na to kanw free to prohgoumeno
 		fread(string,fsize,1,f);
 		fclose(f);
 
 		string[fsize]=0;
-
+		//printf("\n\n\n\n\n\n\n\n\n\n\nsend string=%s...\n\n\n\n\n\n\n\n\n\n\n\n",string);
 		/////////////////////////////////////////////////////
-		char temp_length_file[4];
-		memset(temp_length_file,0,4);
-		sprintf(temp_length_file,"%d",fsize);
+		//char temp_length_file[4];
+		//memset(temp_length_file,0,4);
+		//sprintf(temp_length_file,"%d",fsize);
 
-		printf("fsize=%d temp_length_file=%s...\n",fsize,temp_length_file);
+		//printf("fsize=%d temp_length_file=%s...\n",fsize,temp_length_file);
 
-		if(write(fd,temp_length_file,4)==-1){//3.
+		if(write(fd,&fsize,4)==-1){//3.
 			perror("ERROR IN WRITING 5");
 					exit(10);
 		}
@@ -252,11 +259,12 @@ void sendFiles(int fd,char *directory_or_file,int b,char *log_file,int useless_p
 				}
 				bytes_transfered+=tr;
 			}
-			printf("\t\t\ttr=%d",tr);
+			//printf("\t\t\ttr=%d",tr);
 		}
 		printf("\t\t\tsender done with file\n");
+		free(string);
 ///////////////////////////////////////
-		fprintf(f_log,"send %s %d\n",directory_or_file,2+length_name+4+atoi(temp_length_file));
+		fprintf(f_log,"send %s %d\n",directory_or_file,2+length_name+4+fsize);
 		fclose(f_log);
 ////////////////////////////////////////
 	}
