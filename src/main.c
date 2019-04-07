@@ -7,10 +7,19 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <signal.h>
 #include "../header-files/functions.h"
 #include "../header-files/list.h"
 
+//signals
+void IntSignal(int signum);
+void QuitSignal(int signum);
+
+int flag_to_quit;
+
 int main(int argc,char **argv){
+	flag_to_quit=0;
+
 	struct_arguments *arguments;
 	if(takeArguments(&arguments,argc,argv)==-1){
 		return 1;
@@ -40,6 +49,11 @@ int main(int argc,char **argv){
 		return 4;
 	}
 
+/////////////////////
+	signal(SIGINT,IntSignal);
+	signal(SIGQUIT,QuitSignal);
+/////////////////////
+
 	//leipei to bhma 3
 
 	//lista me ta arxeia pou epikoinwnei
@@ -63,18 +77,26 @@ int main(int argc,char **argv){
 
 	char *temp_id;
 	temp_id=malloc((countDigits(arguments->id)+1)*sizeof(char));
-	memset(temp_id,0,countDigits(arguments->id)+strlen(".id")+1);
+	//memset(temp_id,0,countDigits(arguments->id)+strlen(".id")+1); //////////////////
+	memset(temp_id,0,countDigits(arguments->id)+1);
 	sprintf(temp_id,"%d",arguments->id);
 
 	char *temp_buffer_size;
 	temp_buffer_size=malloc((countDigits(arguments->id)+1)*sizeof(char));
-	memset(temp_buffer_size,0,countDigits(arguments->id)+strlen(".id")+1);
+	//memset(temp_buffer_size,0,countDigits(arguments->id)+strlen(".id")+1);//////////
+	memset(temp_buffer_size,0,countDigits(arguments->id)+1);
 	sprintf(temp_buffer_size,"%d",arguments->buffer_size);
 
 	//char *sender_args[]={"./sender_child",temp_id,arguments->common_dir,arguments->input_dir,arguments->mirror_dir,temp_buffer_size,arguments->log_file,NULL,NULL};
 	//char *receiver_args[]={"./receiver_child",temp_id,arguments->common_dir,arguments->input_dir,arguments->mirror_dir,temp_buffer_size,arguments->log_file,NULL,NULL};
 
 	while(1){
+////////////////////////////
+//elefxw to flag_to_quit gia na kanw delete to mirror kai to id apo ton common kai na bgw apo to loop
+		if(flag_to_quit==1){
+			break;
+		}
+////////////////////////////
 ////////////////////////////
 //mhdenizw ola ta still_exist
 		initializeZeroList(l);///////
@@ -206,20 +228,51 @@ int main(int argc,char **argv){
 
 		sleep(1);//to eixa 10
 ///////////////////////////////////////
-	FILE *f_log;//AYTA PREPEI NA FYGEI TO EXW BALEI APLA GIA NA TESTARW TO SCRIPT
+/*	FILE *f_log;//AYTA PREPEI NA FYGEI TO EXW BALEI APLA GIA NA TESTARW TO SCRIPT
+	f_log=fopen(arguments->log_file,"a");
+	fprintf(f_log,"client left id=%d\n",arguments->id);
+	fclose(f_log);
+*/
+/////////////////////////////////////////
+	}
+	//6
+	printf("DESTROY EVERYTHING !!!\n");
+	//destroy mirror
+	cleanDirOrFile(arguments->mirror_dir);
+	//ftiaxnw to path gia to id ston common
+	char *myIdFile;
+	myIdFile=malloc((strlen(arguments->common_dir)+strlen(temp_id)+strlen(".id")+1)*sizeof(char));
+	memset(myIdFile,0,strlen(arguments->common_dir)+strlen(temp_id)+strlen(".id")+1);
+	strcpy(myIdFile,arguments->common_dir);
+	strcat(myIdFile,temp_id);
+	strcat(myIdFile,".id");
+	printf("temp_id=%s... myIdFile=%s...\n",temp_id,myIdFile);
+	//destroy arxeio
+	cleanDirOrFile(myIdFile);
+	/////6-end
+///////////////////////////////////////
+	FILE *f_log;//GIA TO SCRIPT
 	f_log=fopen(arguments->log_file,"a");
 	fprintf(f_log,"client left id=%d\n",arguments->id);
 	fclose(f_log);
 /////////////////////////////////////////
-	}
 
 	destroyList(&l);
 }
 
 
+//signals
+void IntSignal(int signum){//gia to A6
+	signal(SIGINT,IntSignal);//mporei na mhn xreiazetai
+	printf("I AM SIGINT !\n");
+	flag_to_quit=1;
+}
 
-
-
+void QuitSignal(int signum){//gia to A6
+	signal(SIGQUIT,QuitSignal);//mporei na mhn xreiazetai
+	printf("I AM SIGQUIT !\n");
+	flag_to_quit=1;
+}
 
 
 

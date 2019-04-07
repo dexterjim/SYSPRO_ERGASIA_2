@@ -17,3 +17,4 @@ int countDigits(int x);
 
 
 int isDirectory(const char *path);
+void cleanDirOrFile(char *directory_or_file);

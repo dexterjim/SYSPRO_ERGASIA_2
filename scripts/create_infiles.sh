@@ -8,7 +8,7 @@ fi
 ###
 
 # 1. Elegxw ta noumera eisodou
-# Elegxw an to 2o argument (num_of_files) einai akeraios ari8mos kai megaluteros apo to 0
+# Elegxw an to 2o argument (num_of_files) einai akeraios ari8mos kai megaluteros h isos apo to 0
 NUM_OF_FILES=$2
 #https://stackoverflow.com/questions/806906/how-do-i-test-if-a-variable-is-a-number-in-bash
 re='^[0-9]+$'
@@ -22,7 +22,7 @@ if (( $NUM_OF_FILES < 0 )); then
 fi
 ###
 
-# Elegxw an to 3o argument (num_of_dirs) einai akeraios ari8mos kai megaluteros apo to 0
+# Elegxw an to 3o argument (num_of_dirs) einai akeraios ari8mos kai megaluteros h isos apo to 0
 NUM_OF_DIRS=$3
 #https://stackoverflow.com/questions/806906/how-do-i-test-if-a-variable-is-a-number-in-bash
 re='^[0-9]+$'
@@ -36,7 +36,7 @@ if (( $NUM_OF_DIRS < 0 )); then
 fi
 ###
 
-# Elegxw an to 4o argument (levels) einai akeraios ari8mos kai megaluteros apo to 0
+# Elegxw an to 4o argument (levels) einai akeraios ari8mos kai megaluteros h isos apo to 0
 LEVELS=$4
 #https://stackoverflow.com/questions/806906/how-do-i-test-if-a-variable-is-a-number-in-bash
 re='^[0-9]+$'
@@ -126,7 +126,7 @@ done
 COUNTER=0
 while [ $COUNTER -lt $NUM_OF_FILES ]; do
 	#https://stackoverflow.com/questions/2556190/random-number-from-a-range-in-a-bash-script
-	#to range ths urandom einai 0 and 32767
+	#to range ths random einai 0 and 32767
 
 	XARAKTHRES=$RANDOM
 	let XARAKTHRES=XARAKTHRES*32768+XARAKTHRES #ousistika ekana XARAKTHRES<<15+XARAKTHRES , me skopo na ftiaksw enan ari8mo 2^30 , egw xreiazomai ws 2^17 , pollaplasiazw me 2^15

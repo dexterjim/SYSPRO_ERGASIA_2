@@ -147,3 +147,34 @@ int isDirectory(const char *path){
 		return 0;
 	return S_ISDIR(statbuf.st_mode);
 }
+
+void cleanDirOrFile(char *directory_or_file){
+	if(isDirectory(directory_or_file)>0){//is dir
+		DIR *d;
+		struct dirent *dir;
+		d=opendir(directory_or_file);
+		if(d){
+			while((dir=readdir(d))!=NULL){
+				if(strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0){
+					printf("[[[dir->d_name=%s]]]\n",dir->d_name);
+					char *next_dir;
+					next_dir=malloc((strlen(directory_or_file)+strlen(dir->d_name)+strlen("/")+1)*sizeof(char));
+					memset(next_dir,0,strlen(directory_or_file)+strlen(dir->d_name)+strlen("/")+1);
+					strcpy(next_dir,directory_or_file);
+					//strcat(next_dir,"/");
+					strcat(next_dir,dir->d_name);
+					if(isDirectory(next_dir)>0){
+						strcat(next_dir,"/");
+					}
+					//sendFiles(fd,next_dir,b,log_file,useless_part);
+					cleanDirOrFile(next_dir);
+				}
+			}
+		}
+		closedir(d);
+		rmdir(directory_or_file);
+	}
+	else{
+		remove(directory_or_file);
+	}
+}
