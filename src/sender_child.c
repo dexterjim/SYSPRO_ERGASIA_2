@@ -147,6 +147,9 @@ int main(int argc,char **argv){
 				exit(10);
 	}
 	//////////////////
+
+	//close pipe
+	close(fd);
 }
 
 //TO INPUTDIR NA EINAI ME '/' STO TELOS

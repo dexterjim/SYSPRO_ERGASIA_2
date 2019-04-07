@@ -234,6 +234,9 @@ int main(int argc,char **argv){
 		//sleep(1); //sto git me to COMPLETED to exw anoikto
 		//break;
 	}
+	//close pipe and remove file
+	close(fd);
+	remove(pipename);
 }
 
 /*
