@@ -63,6 +63,7 @@ void destroyList(list **l){
 	while(temp!=NULL){
 		prev=temp;
 		temp=temp->next;
+		free(prev->str);
 		free(prev);
 	}
 	free((*l));
@@ -106,6 +107,7 @@ char *searchAndDeleteZeroList(list *l){
 			else{//stoixeio kapou sth mesh
 				prev->next=temp->next;
 			}
+			free(temp->str);
 			free(temp);
 
 			return id;

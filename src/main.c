@@ -186,7 +186,7 @@ int main(int argc,char **argv){
 			}
 ////////////////////////////////////////////////////////////////
 //ektelw to 5 gia ola ta still_exist==0
-			char *missing_client;
+			char *missing_client;//exei leak mallon
 			while((missing_client=searchAndDeleteZeroList(l))!=NULL){///////
 				printf("\n\n\nmissing_client=%s...\n\n\n",missing_client);
 
@@ -205,7 +205,7 @@ int main(int argc,char **argv){
 							other_id=other_id*10+missing_client[i]-'0';
 							i++;
 						}
-						char *temp_other_id;
+						char *temp_other_id;//mallon auto einai to mono leak mou
 						temp_other_id=malloc((countDigits(other_id)+1)*sizeof(char));
 						memset(temp_other_id,0,countDigits(other_id)+1);
 						sprintf(temp_other_id,"%d",other_id);
@@ -226,7 +226,7 @@ int main(int argc,char **argv){
 			closedir(d);
 		}
 
-		sleep(1);//to eixa 10
+		sleep(10);//to eixa 10
 ///////////////////////////////////////
 /*	FILE *f_log;//AYTA PREPEI NA FYGEI TO EXW BALEI APLA GIA NA TESTARW TO SCRIPT
 	f_log=fopen(arguments->log_file,"a");
@@ -256,6 +256,16 @@ int main(int argc,char **argv){
 	fprintf(f_log,"client left id=%d\n",arguments->id);
 	fclose(f_log);
 /////////////////////////////////////////
+
+	free(temp_id);
+	free(temp_buffer_size);
+	free(myIdFile);
+
+	free(arguments->common_dir);
+	free(arguments->input_dir);
+	free(arguments->mirror_dir);
+	free(arguments->log_file);
+	free(arguments);
 
 	destroyList(&l);
 }

@@ -150,6 +150,17 @@ int main(int argc,char **argv){
 
 	//close pipe
 	close(fd);
+
+	//////////////////
+	free(id);
+	free(common_dir);
+	free(input_dir);
+	free(mirror_dir);
+	free(buffer_size);
+	free(log_file);
+	free(other_id);
+	free(pipename);
+	//////////////////
 }
 
 //TO INPUTDIR NA EINAI ME '/' STO TELOS
@@ -202,9 +213,11 @@ void sendFiles(int fd,char *directory_or_file,int b,char *log_file,int useless_p
 						strcat(next_dir,"/");
 					}
 					sendFiles(fd,next_dir,b,log_file,useless_part);
+					free(next_dir);
 				}
 			}
 		}
+		closedir(d);
 ////////////////////////////////////////////
 
 ///////////////////////////////////////

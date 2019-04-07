@@ -87,8 +87,8 @@ int createFileInCommon(struct_arguments *arguments){//ta dirs prepei na dinontai
 	memset(idfile,0,strlen(arguments->common_dir)+countDigits(arguments->id)+strlen(".id")+1);
 	strcpy(idfile,arguments->common_dir);
 	char *temp;
-	temp=malloc(countDigits(arguments->id)*sizeof(char));
-	memset(temp,0,countDigits(arguments->id));
+	temp=malloc((countDigits(arguments->id)+1)*sizeof(char));
+	memset(temp,0,countDigits(arguments->id)+1);
 	sprintf(temp,"%d",arguments->id);
 	strcat(idfile,temp);
 	free(temp);
@@ -113,6 +113,8 @@ int createFileInCommon(struct_arguments *arguments){//ta dirs prepei na dinontai
 
 	//kleinw to arxeio
 	fclose(f);//GENIKA NA ELEGXW AN KLEINW SWSTA OLA TA ARXEIA
+
+	free(idfile);
 
 	return 0;
 }
@@ -168,6 +170,7 @@ void cleanDirOrFile(char *directory_or_file){
 					}
 					//sendFiles(fd,next_dir,b,log_file,useless_part);
 					cleanDirOrFile(next_dir);
+					free(next_dir);
 				}
 			}
 		}

@@ -1,9 +1,11 @@
 ΛΑΖΑΡΙΔΗΣ ΔΗΜΗΤΡΙΟΣ 1115201400086
 
 Compile: make
-Run (παραδείγματα εκτέλεσης):	
+Run (παραδείγματα εκτέλεσης):	./mirror_client -n 1 -c ./common/ -i ./input-files/infiles/ -m ./mirror-files/m1/ -b 5 -l ./log-files/log_file1
+				./mirror_client -n 2 -c ./common/ -i ./input-files/infiles/Cy/ -m ./mirror-files/m2/ -b 50 -l ./log-files/log_file2
+				./mirror_client -n 3 -c ./common/ -i ./input-files/infiles/NKU/ -m ./mirror-files/m3/ -b 35 -l ./log-files/log_file3
  -Για το create_infiles.sh:	
- -Για το get_stats.sh:		
+ -Για το get_stats.sh:		cat ./log-files/log_file1 ./log-files/log_file2 ./log-files/log_file3 | ./scripts/get_stats.sh
 (Από τον αρχικό φάκελο)
 
 

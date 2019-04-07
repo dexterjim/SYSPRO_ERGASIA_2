@@ -165,6 +165,8 @@ int main(int argc,char **argv){
 			strcat(next_dir,path_name);
 
 			mkdir(next_dir,0700);
+
+			free(next_dir);
 ///////////////////////////////////////
 			fprintf(f_log,"receive %d\n",2+length_name);
 ////////////////////////////////////////
@@ -229,7 +231,10 @@ int main(int argc,char **argv){
 ///////////////////////////////////////
 			fprintf(f_log,"receive %s %d\n",next_file,2+length_name+4+length_file);
 ////////////////////////////////////////
+			free(next_file);
 		}
+
+		free(path_name);
 
 		//sleep(1); //sto git me to COMPLETED to exw anoikto
 		//break;
@@ -237,6 +242,18 @@ int main(int argc,char **argv){
 	//close pipe and remove file
 	close(fd);
 	remove(pipename);
+
+	//////////////////
+	free(id);
+	free(common_dir);
+	free(input_dir);
+	free(mirror_dir);
+	free(buffer_size);
+	free(log_file);
+	free(other_id);
+	free(pipename);
+	free(path_to_mirror);
+	//////////////////
 }
 
 /*
