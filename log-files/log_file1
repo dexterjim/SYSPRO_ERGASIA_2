@@ -26,16 +26,4 @@ receive ./mirror-files/m1/3/NKU/N48jk1/3z2R4P/gJ/jEs 83340
 receive ./mirror-files/m1/3/NKU/N48jk1/gEP 12422
 receive ./mirror-files/m1/3/NKU/Xe9u 124018
 receive ./mirror-files/m1/3/NKU/tObl2 65152
-send 5
-send ./input-files/infiles/Cy/W7Pa 2020
-send 7
-send ./input-files/infiles/Cy/e/LB 12698
-send 15
-receive 5
-receive ./mirror-files/m1/2/Cy/W7Pa 2020
-receive 7
-receive ./mirror-files/m1/2/Cy/e/LB 12698
-receive 15
-receive ./mirror-files/m1/2/Cy/e/aTa9PVf/hMl6nsi 44689
-send ./input-files/infiles/Cy/e/aTa9PVf/hMl6nsi 44689
 client left id=1

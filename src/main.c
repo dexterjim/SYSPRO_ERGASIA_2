@@ -8,12 +8,14 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <signal.h>
+#include <sys/wait.h>
 #include "../header-files/functions.h"
 #include "../header-files/list.h"
 
 //signals
 void IntSignal(int signum);
 void QuitSignal(int signum);
+void ChildFinishedSignal(int signum);
 
 int flag_to_quit;
 
@@ -52,6 +54,7 @@ int main(int argc,char **argv){
 /////////////////////
 	signal(SIGINT,IntSignal);
 	signal(SIGQUIT,QuitSignal);
+	signal(SIGCHLD,ChildFinishedSignal);//////////////////////
 /////////////////////
 
 	//leipei to bhma 3
@@ -284,7 +287,27 @@ void QuitSignal(int signum){//gia to A6
 	flag_to_quit=1;
 }
 
+//https://www.linuxquestions.org/questions/programming-9/how-a-father-process-know-which-child-process-send-the-signal-sigchld-266290/
+//https://www.geeksforgeeks.org/wait-system-call-c/
+void ChildFinishedSignal(int signum){
+	//signal(SIGCHLD,ChildFinishedSignal);
+	int stat;
+	pid_t pid;
+	pid=wait(&stat);
+	printf("Pid %d exited.\n",pid);
 
+	if(WIFEXITED(stat)){
+		printf("Exit status: %d\n",WEXITSTATUS(stat));
+		if(WEXITSTATUS(stat)==2){//to 2 einai to epituxes exit apo ton receiver kai to 1 apo ton sender
+			printf("FILES TRANSFERRED SUCCESSFULLY !!!\n");
+		}
+	}
+	else{
+		printf("we will see !!!\n");
+	}
+
+	signal(SIGCHLD,ChildFinishedSignal);
+}
 
 
 

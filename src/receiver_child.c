@@ -254,6 +254,8 @@ int main(int argc,char **argv){
 	free(pipename);
 	free(path_to_mirror);
 	//////////////////
+
+	exit(2);
 }
 
 /*

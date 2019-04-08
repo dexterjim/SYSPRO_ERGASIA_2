@@ -161,6 +161,8 @@ int main(int argc,char **argv){
 	free(other_id);
 	free(pipename);
 	//////////////////
+
+	exit(1);
 }
 
 //TO INPUTDIR NA EINAI ME '/' STO TELOS
