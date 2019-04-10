@@ -12,12 +12,14 @@
 #include "../header-files/functions.h"
 #include "../header-files/list.h"
 
+#define PERIOD 10 //ka8e posa seconds 8a elegxei o client ton common
+
 //signals
 void IntSignal(int signum);
 void QuitSignal(int signum);
 void ChildFinishedSignal(int signum);
 
-int flag_to_quit;
+int flag_to_quit;//otan o xrhsths dwsei ctrl^C h ctrl^\ tote auto to flag 8a ginei 1 wste na kserei o client na termathsei
 
 int main(int argc,char **argv){
 	flag_to_quit=0;
@@ -26,18 +28,8 @@ int main(int argc,char **argv){
 	if(takeArguments(&arguments,argc,argv)==-1){
 		return 1;
 	}
-//////////////////
-	printf("ARGUMENTS\n");
-	printf("id = %d...\n",arguments->id);
-	printf("common_dir = %s...\n",arguments->common_dir);
-	printf("input_dir = %s...\n",arguments->input_dir);
-	printf("mirror_dir = %s...\n",arguments->mirror_dir);
-	printf("buffer_size = %d...\n",arguments->buffer_size);
-	printf("log_file = %s...\n",arguments->log_file);
 
-	printf("getpid()=%d\n",getpid());
-	printf("short=%ld int=%ld\n",sizeof(short),sizeof(int));
-//////////////////
+	//printf("short=%ld int=%ld\n",sizeof(short),sizeof(int));
 
 	if(checkAndCreateDirs(arguments)==-1){ // 1
 		return 2;
@@ -51,59 +43,38 @@ int main(int argc,char **argv){
 		return 4;
 	}
 
-/////////////////////
+	//kanw set ta signals
 	signal(SIGINT,IntSignal);
 	signal(SIGQUIT,QuitSignal);
-	signal(SIGCHLD,ChildFinishedSignal);//////////////////////
-/////////////////////
+	signal(SIGCHLD,ChildFinishedSignal);
 
-	//leipei to bhma 3
 
-	//lista me ta arxeia pou epikoinwnei
+	//lista me ta arxeia pou epikoinwnei o client
 	list *l;
 	initializeList(&l);
 
-	//bazw to arxeio tou apo to common dir wste na to agnow , MPOREI NA MHN XREIAZETAI WSTE NA KANW SUNDESH ME TON EAUTO MOU WSTE NA GINEI H METAFORA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	/*char *temp;
-	temp=malloc((countDigits(arguments->id)+strlen(".id")+1)*sizeof(char));
-	memset(temp,0,countDigits(arguments->id)+strlen(".id")+1);
-	sprintf(temp,"%d",arguments->id);
-	strcat(temp,".id");
-
-	insertList(l,temp);*///AYTO EINAI GIA AN 8ELW NA METAFERW H OXI TA DIKA MOU ARXEIA KAI ANOIKTO KAI KLEISTO DOULEYEI MIA XARA
-	printList(l);
-
-	printf("\n\n\n\n\n");
-
-	//char *sender_args[]={"./sender_child",NULL};
-	//char *receiver_args[]={"./receiver_child",NULL};
-
 	char *temp_id;
 	temp_id=malloc((countDigits(arguments->id)+1)*sizeof(char));
-	//memset(temp_id,0,countDigits(arguments->id)+strlen(".id")+1); //////////////////
 	memset(temp_id,0,countDigits(arguments->id)+1);
 	sprintf(temp_id,"%d",arguments->id);
 
 	char *temp_buffer_size;
 	temp_buffer_size=malloc((countDigits(arguments->id)+1)*sizeof(char));
-	//memset(temp_buffer_size,0,countDigits(arguments->id)+strlen(".id")+1);//////////
 	memset(temp_buffer_size,0,countDigits(arguments->id)+1);
 	sprintf(temp_buffer_size,"%d",arguments->buffer_size);
 
-	//char *sender_args[]={"./sender_child",temp_id,arguments->common_dir,arguments->input_dir,arguments->mirror_dir,temp_buffer_size,arguments->log_file,NULL,NULL};
-	//char *receiver_args[]={"./receiver_child",temp_id,arguments->common_dir,arguments->input_dir,arguments->mirror_dir,temp_buffer_size,arguments->log_file,NULL,NULL};
-
 	while(1){
-////////////////////////////
-//elefxw to flag_to_quit gia na kanw delete to mirror kai to id apo ton common kai na bgw apo to loop
+
+		//elefxw to flag_to_quit gia na kanw delete to mirror kai to id apo ton common kai na bgw apo to loop
 		if(flag_to_quit==1){
 			break;
 		}
-////////////////////////////
-////////////////////////////
-//mhdenizw ola ta still_exist
-		initializeZeroList(l);///////
-////////////////////////////
+
+		printf("Checking for new or missing clients!\n");
+
+		//mhdenizw ola ta still_exist
+		initializeZeroList(l);
+
 		//anoigw ton common dir kai blepw ta arxeia
 		//https://stackoverflow.com/questions/4204666/how-to-list-files-in-a-directory-in-a-c-program
 		DIR *d;
@@ -112,16 +83,14 @@ int main(int argc,char **argv){
 		if(d){
 			while((dir=readdir(d))!=NULL){
 				if(strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0){
-					printf("indir=%s...\n",dir->d_name);
 
 					if(strstr(dir->d_name,".id")==NULL){//an den exei .id , tote einai pipe kai den prepei na to laboume upopshn
-						printf("AAA\n");
 						continue;
 					}
 
 					if(searchList(l,dir->d_name)==0){
 						insertList(l,dir->d_name);
-						printList(l);
+						//printList(l);
 
 						int pid;
 
@@ -147,11 +116,9 @@ int main(int argc,char **argv){
 								//////////////////////////
 								//execv(sender_args[0],sender_args);
 								execl("./sender_child","./sender_child",temp_id,arguments->common_dir,arguments->input_dir,arguments->mirror_dir,temp_buffer_size,arguments->log_file,temp_other_id,NULL);
-								printf("child2\n");
 								break;
 							default://parent
 								//array_of_processes[i]=pid;
-								printf("parent\n");
 								break;
 						}
 
@@ -177,11 +144,9 @@ int main(int argc,char **argv){
 								//////////////////////////
 								//execv(receiver_args[0],receiver_args);
 								execl("./receiver_child","./receiver_child",temp_id,arguments->common_dir,arguments->input_dir,arguments->mirror_dir,temp_buffer_size,arguments->log_file,temp_other_id,NULL);
-								printf("child2\n");
 								break;
 							default://parent
 								//array_of_processes[i]=pid;
-								printf("parent\n");
 								break;
 						}
 					}
@@ -191,7 +156,7 @@ int main(int argc,char **argv){
 //ektelw to 5 gia ola ta still_exist==0
 			char *missing_client;//exei leak mallon
 			while((missing_client=searchAndDeleteZeroList(l))!=NULL){///////
-				printf("\n\n\nmissing_client=%s...\n\n\n",missing_client);
+				printf("Found missing_client %s\n",missing_client);
 
 				//gia to receiver-child
 				int pid=fork();
@@ -215,21 +180,19 @@ int main(int argc,char **argv){
 						//////////////////////////
 						//execv(receiver_args[0],receiver_args);
 						execl("./cleaner_child","./cleaner_child",temp_id,arguments->common_dir,arguments->input_dir,arguments->mirror_dir,temp_buffer_size,arguments->log_file,temp_other_id,NULL);
-						printf("child2\n");
 						break;
 					default://parent
 						//array_of_processes[i]=pid;
-						printf("parent\n");
 						break;
 				}
+				free(missing_client);/////////////////
 			}
-			printList(l);
-			printf("\n\nALL missing_clients DELETED\n\n");
+			//printList(l);
 ////////////////////////////////////////////////////////////////
 			closedir(d);
 		}
 
-		sleep(10);//to eixa 10
+		sleep(PERIOD);//to eixa 10
 ///////////////////////////////////////
 /*	FILE *f_log;//AYTA PREPEI NA FYGEI TO EXW BALEI APLA GIA NA TESTARW TO SCRIPT
 	f_log=fopen(arguments->log_file,"a");
@@ -249,7 +212,6 @@ int main(int argc,char **argv){
 	strcpy(myIdFile,arguments->common_dir);
 	strcat(myIdFile,temp_id);
 	strcat(myIdFile,".id");
-	printf("temp_id=%s... myIdFile=%s...\n",temp_id,myIdFile);
 	//destroy arxeio
 	cleanDirOrFile(myIdFile);
 	/////6-end
@@ -277,13 +239,11 @@ int main(int argc,char **argv){
 //signals
 void IntSignal(int signum){//gia to A6
 	signal(SIGINT,IntSignal);//mporei na mhn xreiazetai
-	printf("I AM SIGINT !\n");
 	flag_to_quit=1;
 }
 
 void QuitSignal(int signum){//gia to A6
 	signal(SIGQUIT,QuitSignal);//mporei na mhn xreiazetai
-	printf("I AM SIGQUIT !\n");
 	flag_to_quit=1;
 }
 
@@ -308,6 +268,7 @@ void ChildFinishedSignal(int signum){
 
 	signal(SIGCHLD,ChildFinishedSignal);
 }
+
 
 
 

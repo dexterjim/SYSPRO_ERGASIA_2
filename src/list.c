@@ -15,7 +15,7 @@ void insertList(list *l,char *element){
 		l->end->str=malloc((strlen(element)+1)*sizeof(char));
 		memset(l->end->str,0,strlen(element)+1);
 		strcpy(l->end->str,element);
-		l->end->still_exist=1;//
+		l->end->still_exist=1;//to kanoume 1 ka8ws uparxei ston common afou molis to brhkame
 		l->end->next=NULL;
 
 		l->start=l->end;
@@ -37,7 +37,7 @@ int searchList(list *l,char *element){
 	temp=l->start;
 	while(temp!=NULL){
 		if(strcmp(temp->str,element)==0){
-			temp->still_exist=1;//
+			temp->still_exist=1;//gia opoio brw to kanw 1
 			return 1;//found it
 		}
 		temp=temp->next;
@@ -78,14 +78,13 @@ void initializeZeroList(list *l){
 	}
 }
 
-char *searchAndDeleteZeroList(list *l){
+char *searchAndDeleteZeroList(list *l){//trexei thn lista ws na brei to prwto still_exist==0 , diagrafei ton kombo kai epistrefei to pedio str
 	listnode *temp,*prev;
 	temp=l->start;
 	prev=NULL;
 	while(temp!=NULL){
 		if(temp->still_exist==0){
 			char *id;
-			printf("\n\n\n\ntemp->str=%s\n\n\n\n",temp->str);
 			id=malloc((strlen(temp->str)+1)*sizeof(char));
 			memset(id,0,strlen(temp->str)+1);
 			strcpy(id,temp->str);
@@ -93,16 +92,13 @@ char *searchAndDeleteZeroList(list *l){
 			if(l->start==temp && l->end==temp){//exei mono 1 stoixeio
 				l->start=NULL;
 				l->end=NULL;
-				//free(temp);
 			}
 			else if(l->start==temp){//to prwto stoixeio
 				l->start=temp->next;
-				//free(temp);
 			}
 			else if(l->end==temp){//to teletaio stoixeio
 				prev->next=NULL;
 				l->end=prev;
-				//free(temp);
 			}
 			else{//stoixeio kapou sth mesh
 				prev->next=temp->next;

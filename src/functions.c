@@ -94,15 +94,13 @@ int createFileInCommon(struct_arguments *arguments){//ta dirs prepei na dinontai
 	free(temp);
 	strcat(idfile,".id");
 
-	printf("path file=%s...\n",idfile);
 
-	//////////
 	//https://stackoverflow.com/questions/230062/whats-the-best-way-to-check-if-a-file-exists-in-c
 	if(access(idfile,F_OK)!=-1){
 		printf("\n\nThere is another client with the same id !!!\n\n\n");
 		return -1;
 	}
-	//////////
+
 
 	//anoigw to arxeio
 	FILE *f;
@@ -112,7 +110,7 @@ int createFileInCommon(struct_arguments *arguments){//ta dirs prepei na dinontai
 	fprintf(f,"%d",getpid());
 
 	//kleinw to arxeio
-	fclose(f);//GENIKA NA ELEGXW AN KLEINW SWSTA OLA TA ARXEIA
+	fclose(f);
 
 	free(idfile);
 
@@ -154,21 +152,19 @@ void cleanDirOrFile(char *directory_or_file){
 	if(isDirectory(directory_or_file)>0){//is dir
 		DIR *d;
 		struct dirent *dir;
-		d=opendir(directory_or_file);
+		d=opendir(directory_or_file);//anoigw ton fakelo kai kalw thn synarthsh gia ola ta stoixeia pou exei mesa
+		//ousiastika kollaw sto telos tou trxwn dir ta oti arxeia kai fakelous exei mesa gia na ftiaksw ta nea paths
 		if(d){
 			while((dir=readdir(d))!=NULL){
 				if(strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0){
-					printf("[[[dir->d_name=%s]]]\n",dir->d_name);
 					char *next_dir;
 					next_dir=malloc((strlen(directory_or_file)+strlen(dir->d_name)+strlen("/")+1)*sizeof(char));
 					memset(next_dir,0,strlen(directory_or_file)+strlen(dir->d_name)+strlen("/")+1);
 					strcpy(next_dir,directory_or_file);
-					//strcat(next_dir,"/");
 					strcat(next_dir,dir->d_name);
-					if(isDirectory(next_dir)>0){
+					if(isDirectory(next_dir)>0){//an prokeitai gia dir tote bazw / sto telos
 						strcat(next_dir,"/");
 					}
-					//sendFiles(fd,next_dir,b,log_file,useless_part);
 					cleanDirOrFile(next_dir);
 					free(next_dir);
 				}
