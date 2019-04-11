@@ -50,8 +50,8 @@ int main(int argc,char **argv){
 	if(access(pipename,F_OK)!=-1){// file exists
 		//printf("%s already exists\n",pipename);
 	}
-	else{// file doesn't exist
-		if(mkfifo(pipename,0666)==-1){
+	else{// file doesn't exist 
+		if(mkfifo(pipename,0666)==-1){//opote to ftiaxnw
 			if(errno!=EEXIST){
 				perror("receiver:mkfifo_recv");
 				exit(6);
@@ -65,7 +65,7 @@ int main(int argc,char **argv){
 				exit(7);
 	}
 
-	//to useless_part einai apo thn arxh ws to proteleutaio '/' dld o teleutaios fakelos tou input_dir
+	//to useless_part einai apo thn arxh ws to proteleutaio '/' dld kratame mono ton teleutaio fakelo tou input_dir
 	//o skopos einai na dinw ston receiver apo ekei kai katw gt mono auto ton endiaferei
 	int useless_part;
 	int i;
@@ -135,11 +135,12 @@ void sendFiles(int fd,char *directory_or_file,int b,char *log_file,int useless_p
 			while((dir=readdir(d))!=NULL){
 				if(strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0){
 					char *next_dir;
+					//ousistika kollaw sto prohgoumeno dir ton neo stoixeio
 					next_dir=malloc((strlen(directory_or_file)+strlen(dir->d_name)+strlen("/")+1)*sizeof(char));
 					memset(next_dir,0,strlen(directory_or_file)+strlen(dir->d_name)+strlen("/")+1);
 					strcpy(next_dir,directory_or_file);
 					strcat(next_dir,dir->d_name);
-					if(isDirectory(next_dir)>0){//an einai dit tote bazw / sto telos
+					if(isDirectory(next_dir)>0){//kai an einai dir tote bazw / sto telos
 						strcat(next_dir,"/");
 					}
 					sendFiles(fd,next_dir,b,log_file,useless_part);

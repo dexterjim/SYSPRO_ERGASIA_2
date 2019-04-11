@@ -73,7 +73,7 @@ int checkAndCreateDirs(struct_arguments *arguments){
 
 	//dhmiourgw to common_dir
 	if(stat(arguments->common_dir,&st)==-1){
-		mkdir(arguments->common_dir,0700);//GENIKA ME TA mkdir PREPEI NA FTIAXNW TO PATH , EDW 8A TA EXW ETOIMA
+		mkdir(arguments->common_dir,0700);
 	}
 
 	return 0;
@@ -126,7 +126,7 @@ int createLogFile(struct_arguments *arguments){
 	fprintf(f,"id %d\n",arguments->id);
 
 	//kleinw to arxeio
-	fclose(f);//GENIKA NA ELEGXW AN KLEINW SWSTA OLA TA ARXEIA
+	fclose(f);
 	return 0;
 }
 

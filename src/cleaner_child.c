@@ -62,7 +62,7 @@ void cleanSubdirFromMirror(char *directory_or_file){
 	if(isDirectory(directory_or_file)>0){//is dir
 		DIR *d;
 		struct dirent *dir;
-		d=opendir(directory_or_file);
+		d=opendir(directory_or_file);//anoigw ton fakelo kai kalw thn synarthsh gia kaue stoixeio pou exei mesa
 		if(d){
 			while((dir=readdir(d))!=NULL){
 				if(strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0){
@@ -80,6 +80,7 @@ void cleanSubdirFromMirror(char *directory_or_file){
 			}
 		}
 		closedir(d);
+		//delete directory
 		rmdir(directory_or_file);
 	}
 	else{//is file

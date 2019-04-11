@@ -99,6 +99,7 @@ int main(int argc,char **argv){
 
 		if(path_name[strlen(path_name)-1]=='/'){//is a dir
 			char *next_dir;
+			//kollaw sto path pou me odhgei sto mirror to onoma tou fakelou
 			next_dir=malloc((strlen(path_to_mirror)+strlen(path_name)+1)*sizeof(char));
 			memset(next_dir,0,strlen(path_to_mirror)+strlen(path_name)+1);
 			strcpy(next_dir,path_to_mirror);
@@ -116,6 +117,7 @@ int main(int argc,char **argv){
 			//create file
 			char *next_file;
 			FILE *fp;
+			//kollaw sto path pou me odhgei sto mirror to onoma tou arxeiou
 			next_file=malloc((strlen(path_to_mirror)+strlen(path_name)+1)*sizeof(char));
 			memset(next_file,0,strlen(path_to_mirror)+strlen(path_name)+1);
 			strcpy(next_file,path_to_mirror);
@@ -166,9 +168,12 @@ int main(int argc,char **argv){
 
 		free(path_name);
 	}
+
+	fclose(f_log);
+
 	//close pipe and remove file
 	close(fd);
-	remove(pipename);
+	remove(pipename);//NA TO BALW SE KA8E EXIT
 
 
 	free(id);
