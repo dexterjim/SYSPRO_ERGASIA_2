@@ -54,7 +54,7 @@ int main(int argc,char **argv){
 		if(mkfifo(pipename,0666)==-1){//opote to ftiaxnw
 			if(errno!=EEXIST){
 				perror("receiver:mkfifo_recv");
-				exit(6);
+				exit(10);
 			}
 		}
 	}
@@ -62,7 +62,7 @@ int main(int argc,char **argv){
 	int fd;
 	if((fd=open(pipename,O_WRONLY))<0){
 		perror("fifo open problem1");
-				exit(7);
+		exit(11);
 	}
 
 	//to useless_part einai apo thn arxh ws to proteleutaio '/' dld kratame mono ton teleutaio fakelo tou input_dir
@@ -83,7 +83,7 @@ int main(int argc,char **argv){
 	//otan teleiwsw me thn metafora stelnw mesw sou pipe 00
 	if(write(fd,&length_name,2)==-1){//1.
 		perror("ERROR IN WRITING 2");
-				exit(10);
+		exit(13);
 	}
 
 	//close pipe
@@ -108,12 +108,12 @@ void sendFiles(int fd,char *directory_or_file,int b,char *log_file,int useless_p
 
 	if(write(fd,&length_name,2)==-1){//1.
 		perror("ERROR IN WRITING 3");
-				exit(10);
+		exit(14);
 	}
 
 	if(write(fd,&(directory_or_file[useless_part]),length_name)==-1){//2.
 		perror("ERROR IN WRITING 4");
-				exit(10);
+		exit(15);
 	}
 
 	//anoigw to log arxeio
@@ -124,6 +124,7 @@ void sendFiles(int fd,char *directory_or_file,int b,char *log_file,int useless_p
 	//elegxw an einai arxeio h dir
 	if(isDirectory(directory_or_file)>0){//an einai dir , tom anoigw kai kalw thn synarthsh gia oti exei mesa
 		//bazw sto logfile ta bytes pou edwsa sto pipe gia na metaferw ton fakelo
+		fflush(f_log);
 		fprintf(f_log,"send %d\n",2+length_name);
 		fclose(f_log);
 
@@ -167,7 +168,7 @@ void sendFiles(int fd,char *directory_or_file,int b,char *log_file,int useless_p
 
 		if(write(fd,&fsize,4)==-1){//3.
 			perror("ERROR IN WRITING 5");
-					exit(10);
+			exit(16);
 		}
 
 
@@ -177,14 +178,14 @@ void sendFiles(int fd,char *directory_or_file,int b,char *log_file,int useless_p
 			if(b<fsize-bytes_transfered){//exei panw apo b akoma
 				if((tr=write(fd,&(string[bytes_transfered]),b))==-1){//4.
 					perror("ERROR IN WRITING 6");
-							exit(10);
+					exit(17);
 				}
 				bytes_transfered+=tr;
 			}
 			else{//exei ligotera apo b opote metaferw osa mou exoun meinei
 				if((tr=write(fd,&(string[bytes_transfered]),fsize-bytes_transfered))==-1){//4.
 					perror("ERROR IN WRITING 7");
-							exit(10);
+					exit(18);
 				}
 				bytes_transfered+=tr;
 			}
@@ -192,6 +193,7 @@ void sendFiles(int fd,char *directory_or_file,int b,char *log_file,int useless_p
 		free(string);
 
 		//bazw sto logfile to onoma kai to bytes pou xreiasthkan gia na metafer8ei to arxeio
+		fflush(f_log);
 		fprintf(f_log,"send %s %d\n",directory_or_file,2+length_name+4+fsize);
 		fclose(f_log);
 	}

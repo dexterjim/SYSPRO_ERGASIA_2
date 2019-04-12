@@ -198,6 +198,7 @@ int main(int argc,char **argv){
 
 	FILE *f_log;//GIA TO SCRIPT
 	f_log=fopen(arguments->log_file,"a");
+	fflush(f_log);
 	fprintf(f_log,"client left id=%d\n",arguments->id);
 	fclose(f_log);
 
@@ -230,21 +231,16 @@ void QuitSignal(int signum){//gia to A6
 //https://www.linuxquestions.org/questions/programming-9/how-a-father-process-know-which-child-process-send-the-signal-sigchld-266290/
 //https://www.geeksforgeeks.org/wait-system-call-c/
 void ChildFinishedSignal(int signum){
-	//signal(SIGCHLD,ChildFinishedSignal);
 	int stat;
-	//pid_t pid;
-	//pid=wait(&stat);
 	wait(&stat);
-	//printf("Pid %d exited.\n",pid);
 
 	if(WIFEXITED(stat)){
-		printf("Exit status: %d\n",WEXITSTATUS(stat));
-		if(WEXITSTATUS(stat)==2){//to 2 einai to epituxes exit apo ton receiver kai to 1 apo ton sender
+		if(WEXITSTATUS(stat)==2){//to 2 einai to epituxes exit apo ton receiver kai to 1 apo ton sender kai 3 gia ton cleaner
 			printf("FILES TRANSFERRED SUCCESSFULLY !!!\n");
 		}
 	}
 	else{
-		printf("we will see !!!\n");
+		printf("Child didn't terminate normally!\n");
 	}
 
 	signal(SIGCHLD,ChildFinishedSignal);

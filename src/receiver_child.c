@@ -52,7 +52,7 @@ int main(int argc,char **argv){
 		if(mkfifo(pipename,0666)==-1){
 			if(errno!=EEXIST){
 				perror("receiver:mkfifo_recv");
-				exit(6);
+				exit(20);
 			}
 		}
 	}
@@ -61,7 +61,7 @@ int main(int argc,char **argv){
 	int fd;
 	if((fd=open(pipename,O_RDONLY))<0){
 		perror("fifo open problem1");
-				exit(3);
+		exit(21);
 	}
 
 
@@ -82,7 +82,7 @@ int main(int argc,char **argv){
 		unsigned short length_name;
 		if(read(fd,&length_name,2)<0){// 1.
 			perror("ERROR IN READING 2");
-					exit(10);
+			exit(22);
 		}
 
 		if(length_name==0){//otan o sender steilei 00 tote stamataw na diabazw
@@ -93,7 +93,7 @@ int main(int argc,char **argv){
 		memset(path_name,0,length_name+1);
 		if(read(fd,path_name,length_name)<0){// 2.
 			perror("ERROR IN READING 3");
-					exit(10);
+			exit(23);
 		}
 
 		if(path_name[strlen(path_name)-1]=='/'){//is a dir
@@ -109,6 +109,7 @@ int main(int argc,char **argv){
 
 			free(next_dir);
 			//bazw sto logfile ta bytes pou diabase gia thn metafora tou fakelou
+			fflush(f_log);
 			fprintf(f_log,"receive %d\n",2+length_name);
 		}
 		else{//is a file
@@ -128,7 +129,7 @@ int main(int argc,char **argv){
 			unsigned int length_file;
 			if(read(fd,&length_file,4)<0){// 3.
 				perror("ERROR IN READING 4");
-						exit(10);
+				exit(24);
 			}
 
 			char *string;
@@ -141,14 +142,14 @@ int main(int argc,char **argv){
 				if(b<length_file-bytes_transfered){//exei panw apo b akoma
 					if((tr=read(fd,&(string[bytes_transfered]),b))==-1){// 4.
 						perror("ERROR IN READING 5");
-								exit(10);
+						exit(25);
 					}
 					bytes_transfered+=tr;
 				}
 				else{
 					if((tr=read(fd,&(string[bytes_transfered]),length_file-bytes_transfered))==-1){// 3.
 						perror("ERROR IN READING 6");
-								exit(10);
+						exit(26);
 					}
 					bytes_transfered+=tr;
 				}
@@ -160,6 +161,7 @@ int main(int argc,char **argv){
 
 			fclose(fp);
 			//bazw sto logfile ta bytes pou diabase gia thn metafora tou arxeiou
+			fflush(f_log);
 			fprintf(f_log,"receive %s %d\n",next_file,2+length_name+4+length_file);
 
 			free(next_file);

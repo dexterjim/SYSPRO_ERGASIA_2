@@ -123,6 +123,7 @@ int createLogFile(struct_arguments *arguments){
 	f=fopen(arguments->log_file,"w");
 
 	//grafw to id mesa se auto
+	fflush(f);
 	fprintf(f,"id %d\n",arguments->id);
 
 	//kleinw to arxeio

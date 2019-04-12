@@ -55,6 +55,8 @@ int main(int argc,char **argv){
 	free(buffer_size);
 	free(log_file);
 	free(other_id);
+
+	exit(3);
 }
 
 
