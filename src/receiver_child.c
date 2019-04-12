@@ -86,7 +86,6 @@ int main(int argc,char **argv){
 		}
 
 		if(length_name==0){//otan o sender steilei 00 tote stamataw na diabazw
-			printf("TELOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOS\n");
 			break;
 		}
 

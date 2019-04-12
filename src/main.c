@@ -70,7 +70,7 @@ int main(int argc,char **argv){
 			break;
 		}
 
-		printf("Checking for new or missing clients!\n");
+		//printf("Checking for new or missing clients!\n");
 
 		//mhdenizw ola ta still_exist
 		initializeZeroList(l);
@@ -89,6 +89,7 @@ int main(int argc,char **argv){
 					}
 
 					if(searchList(l,dir->d_name)==0){
+						printf("Found new client : %s\n",dir->d_name);
 						insertList(l,dir->d_name);
 						//printList(l);
 
@@ -101,8 +102,7 @@ int main(int argc,char **argv){
 								printf("\n\nFORK FAILED!!!\n\n\n");
 								return 4;
 							case 0://child
-								printf("child1\n");
-								//////////////////////////
+								;
 								int other_id=0;
 								int i=0;
 								while(dir->d_name[i]!='.'){
@@ -113,12 +113,9 @@ int main(int argc,char **argv){
 								temp_other_id=malloc((countDigits(other_id)+1)*sizeof(char));
 								memset(temp_other_id,0,countDigits(other_id)+1);
 								sprintf(temp_other_id,"%d",other_id);
-								//////////////////////////
-								//execv(sender_args[0],sender_args);
 								execl("./sender_child","./sender_child",temp_id,arguments->common_dir,arguments->input_dir,arguments->mirror_dir,temp_buffer_size,arguments->log_file,temp_other_id,NULL);
 								break;
 							default://parent
-								//array_of_processes[i]=pid;
 								break;
 						}
 
@@ -129,8 +126,7 @@ int main(int argc,char **argv){
 								printf("\n\nFORK FAILED!!!\n\n\n");
 								return 4;
 							case 0://child
-								printf("child1\n");
-								//////////////////////////
+								;
 								int other_id=0;
 								int i=0;
 								while(dir->d_name[i]!='.'){
@@ -141,22 +137,19 @@ int main(int argc,char **argv){
 								temp_other_id=malloc((countDigits(other_id)+1)*sizeof(char));
 								memset(temp_other_id,0,countDigits(other_id)+1);
 								sprintf(temp_other_id,"%d",other_id);
-								//////////////////////////
-								//execv(receiver_args[0],receiver_args);
 								execl("./receiver_child","./receiver_child",temp_id,arguments->common_dir,arguments->input_dir,arguments->mirror_dir,temp_buffer_size,arguments->log_file,temp_other_id,NULL);
 								break;
 							default://parent
-								//array_of_processes[i]=pid;
 								break;
 						}
 					}
 				}
 			}
-////////////////////////////////////////////////////////////////
-//ektelw to 5 gia ola ta still_exist==0
-			char *missing_client;//exei leak mallon
-			while((missing_client=searchAndDeleteZeroList(l))!=NULL){///////
-				printf("Found missing_client %s\n",missing_client);
+
+			//ektelw to 5 gia ola ta still_exist==0
+			char *missing_client;
+			while((missing_client=searchAndDeleteZeroList(l))!=NULL){
+				printf("Found missing_client : %s\n",missing_client);
 
 				//gia to receiver-child
 				int pid=fork();
@@ -165,44 +158,31 @@ int main(int argc,char **argv){
 						printf("\n\nFORK FAILED!!!\n\n\n");
 						return 4;
 					case 0://child
-						printf("child1\n");
-						//////////////////////////
+						;
 						int other_id=0;
 						int i=0;
 						while(missing_client[i]!='.'){
 							other_id=other_id*10+missing_client[i]-'0';
 							i++;
 						}
-						char *temp_other_id;//mallon auto einai to mono leak mou
+						char *temp_other_id;
 						temp_other_id=malloc((countDigits(other_id)+1)*sizeof(char));
 						memset(temp_other_id,0,countDigits(other_id)+1);
 						sprintf(temp_other_id,"%d",other_id);
-						//////////////////////////
-						//execv(receiver_args[0],receiver_args);
 						execl("./cleaner_child","./cleaner_child",temp_id,arguments->common_dir,arguments->input_dir,arguments->mirror_dir,temp_buffer_size,arguments->log_file,temp_other_id,NULL);
 						break;
 					default://parent
-						//array_of_processes[i]=pid;
 						break;
 				}
-				free(missing_client);/////////////////
+				free(missing_client);
 			}
-			//printList(l);
-////////////////////////////////////////////////////////////////
 			closedir(d);
 		}
 
-		sleep(PERIOD);//to eixa 10
-///////////////////////////////////////
-/*	FILE *f_log;//AYTA PREPEI NA FYGEI TO EXW BALEI APLA GIA NA TESTARW TO SCRIPT
-	f_log=fopen(arguments->log_file,"a");
-	fprintf(f_log,"client left id=%d\n",arguments->id);
-	fclose(f_log);
-*/
-/////////////////////////////////////////
+		sleep(PERIOD);
 	}
 	//6
-	printf("DESTROY EVERYTHING !!!\n");
+	//printf("DESTROY EVERYTHING !!!\n");
 	//destroy mirror
 	cleanDirOrFile(arguments->mirror_dir);
 	//ftiaxnw to path gia to id ston common
@@ -215,12 +195,12 @@ int main(int argc,char **argv){
 	//destroy arxeio
 	cleanDirOrFile(myIdFile);
 	/////6-end
-///////////////////////////////////////
+
 	FILE *f_log;//GIA TO SCRIPT
 	f_log=fopen(arguments->log_file,"a");
 	fprintf(f_log,"client left id=%d\n",arguments->id);
 	fclose(f_log);
-/////////////////////////////////////////
+
 
 	free(temp_id);
 	free(temp_buffer_size);
@@ -252,9 +232,10 @@ void QuitSignal(int signum){//gia to A6
 void ChildFinishedSignal(int signum){
 	//signal(SIGCHLD,ChildFinishedSignal);
 	int stat;
-	pid_t pid;
-	pid=wait(&stat);
-	printf("Pid %d exited.\n",pid);
+	//pid_t pid;
+	//pid=wait(&stat);
+	wait(&stat);
+	//printf("Pid %d exited.\n",pid);
 
 	if(WIFEXITED(stat)){
 		printf("Exit status: %d\n",WEXITSTATUS(stat));
